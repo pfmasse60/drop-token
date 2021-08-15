@@ -1,0 +1,181 @@
+service: drop-token
+frameworkVersion: '2'
+configValidationMode: error
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-pseudo-parameters
+  # - serverless-dynamodb-local
+  # - serverless-offline
+  # - serverless-webpack
+
+custom:
+  tablename: GameTable2
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: drop-token
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'dynamodb:DescribeTable'
+        - 'dynamodb:Query'
+        - 'dynamodb:Scan'
+        - 'dynamodb:GetItem'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:UpdateItem'
+        - 'dynamodb:DeleteItem'
+      Resource:
+        - arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.tablename}
+
+
+  # iam:  
+  #   role:
+  #     statements:
+  #       - Effect: "Allow"
+  #         Action:
+            # - 'dynamodb:DescribeTable'
+            # - 'dynamodb:Query'
+            # - 'dynamodb:Scan'
+            # - 'dynamodb:GetItem'
+            # - 'dynamodb:PutItem'
+            # - 'dynamodb:UpdateItem'
+            # - 'dynamodb:DeleteItem'
+  #         Resource: { "Fn::GetAtt": ['${self:custom.tablename}', 'Arn'] }
+
+  environment: 
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    gameTableName: "${self:custom.tablename}"
+    gameState: "IN_PROGRESS"
+
+package:
+  individually: true
+
+functions:
+  createNewGame:
+    handler: src/functions/createNewGame.handler
+    name: createNewGame
+    description: Create a new drop token game
+    events:
+      - httpApi:
+          path: /
+          method: post
+
+  deletePlayer:
+    handler: src/functions/deletePlayer.handler
+    name: deletePlayer
+    events:
+      - httpApi:
+          path: /{gameId}/{playerId}
+          method: delete
+
+  getGameState:
+    handler: src/functions/getGameState.handler
+    name: getGameState
+    events:
+      - httpApi:
+          path: /{gameId}
+          method: get
+
+  getMoves:
+    handler: src/functions/getMoves.handler
+    name: getMoves
+    events:
+      - httpApi:
+          path: /{gameId}/moves
+          method: get
+
+  postMove:
+    handler: src/functions/postMove.handler
+    name: postMove
+    events:
+      - httpApi:
+          path: /{gameId}/{playerId}
+          method: post
+
+  returnAllGames:
+    handler: src/functions/returnAllGames.handler
+    name: returnAllGames
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  getSingleMove:
+    handler: src/functions/getSingleMove.handler
+    name: getSingleMove
+    events:
+      - httpApi:
+          path: /{gameId}/moves/{move_number}
+          method: get
+
+  testFunction:
+    handler: src/functions/testFunction.handler
+    name: testFunction
+    events:
+      - httpApi:
+          path: /
+          method: PATCH          
+
+resources:
+  Resources:
+    GameTable2:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "${self:custom.tablename}"
+        AttributeDefinitions:
+          - AttributeName: "itemType"
+            AttributeType: "S"
+          - AttributeName: "Id"
+            AttributeType: "S"
+          - AttributeName: "move_number"
+            AttributeType: "S"
+          - AttributeName: "gameId"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "itemType"
+            KeyType: "HASH"
+          - AttributeName: "Id"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: "MoveNumberIndex"
+            KeySchema:
+              - AttributeName: "gameId"
+                KeyType: "HASH"
+              - AttributeName: "move_number"
+                KeyType: "RANGE"
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: "PlayerIndex"
+            KeySchema:
+              - AttributeName: "gameId"
+                KeyType: "HASH"              
+              - AttributeName: "Id"
+                KeyType: "RANGE"
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: "CounterIndex"
+            KeySchema:
+              - AttributeName: "itemType"
+                KeyType: "HASH"              
+              - AttributeName: "gameId"
+                KeyType: "RANGE"
+            Projection:
+              ProjectionType: "ALL"
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1                            
+
