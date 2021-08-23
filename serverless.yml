@@ -5,12 +5,22 @@ configValidationMode: error
 plugins:
   - serverless-plugin-typescript
   - serverless-pseudo-parameters
-  # - serverless-dynamodb-local
-  # - serverless-offline
+  - serverless-dynamodb-local
+  - serverless-offline
   # - serverless-webpack
 
 custom:
-  tablename: GameTable2
+  tablename: GameTable
+  dynamodb:
+    stages:
+      - dev
+      - drop-token
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
 
 provider:
   name: aws
@@ -51,6 +61,7 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     gameTableName: "${self:custom.tablename}"
     gameState: "IN_PROGRESS"
+    IS_OFFLINE: true
 
 package:
   individually: true
@@ -123,7 +134,7 @@ functions:
 
 resources:
   Resources:
-    GameTable2:
+    GameTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: "${self:custom.tablename}"
@@ -131,8 +142,6 @@ resources:
           - AttributeName: "itemType"
             AttributeType: "S"
           - AttributeName: "Id"
-            AttributeType: "S"
-          - AttributeName: "move_number"
             AttributeType: "S"
           - AttributeName: "gameId"
             AttributeType: "S"
@@ -149,7 +158,7 @@ resources:
             KeySchema:
               - AttributeName: "gameId"
                 KeyType: "HASH"
-              - AttributeName: "move_number"
+              - AttributeName: "itemType"
                 KeyType: "RANGE"
             Projection:
               ProjectionType: "ALL"

@@ -2,8 +2,17 @@ import AWS from "aws-sdk";
 import { v4 as uuidv4 } from 'uuid';
 
 const TABLE_NAME = process.env.gameTableName;
-export const moveCounter = async(gameId: string) => {
-    const dynamodb = new AWS.DynamoDB.DocumentClient();
+export const moveCounter = async(gameId: string):Promise<number> => {
+
+  let options = {};
+  if (process.env.IS_OFFLINE) {
+  options = {
+      region: 'localhost',
+      endpoint: 'http://localhost:8000',
+  }
+  }
+
+    const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
     const params = {
         ExpressionAttributeValues: {
@@ -25,7 +34,7 @@ export const moveCounter = async(gameId: string) => {
       if(result.Items && result.Items.length > 0) {
         const myObj = result.Items[0];
 
-        let new_count = myObj.move_count;
+        let new_count:number = myObj.move_count;
         new_count = new_count + 1;
 
         const counterParams = {
@@ -46,10 +55,10 @@ export const moveCounter = async(gameId: string) => {
         catch (e) {
           return(e.message)
         }
-        return(new_count.toString());
+        return(new_count);
 
       } else {
-      const move_count = '0';
+      const move_count = 1;
       const counterParams = {
         TableName: TABLE_NAME as string,
         Item: {

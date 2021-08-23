@@ -2,7 +2,16 @@ import AWS from "aws-sdk";
 const TABLE_NAME = process.env.gameTableName;
 
 export const returnState = async(Id: string) => {
-    const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+  let options = {};
+  if (process.env.IS_OFFLINE) {
+  options = {
+      region: 'localhost',
+      endpoint: 'http://localhost:8000',
+  }
+  }
+
+    const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
     const params = {
       ExpressionAttributeValues: {

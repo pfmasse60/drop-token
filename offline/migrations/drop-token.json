@@ -1,0 +1,93 @@
+{
+   "TableName": "GameTable",
+   "AttributeDefinitions": [
+      {
+         "AttributeName": "itemType",
+         "AttributeType": "S"
+      },
+      {
+         "AttributeName": "Id",
+         "AttributeType": "S"
+      },
+      {
+         "AttributeName": "gameId",
+         "AttributeType": "S"
+      }
+   ],
+   "KeySchema": [
+      {
+         "AttributeName": "itemType",
+         "KeyType": "HASH"
+      },
+      {
+         "AttributeName": "Id",
+         "KeyType": "RANGE"
+      }
+   ],
+   "ProvisionedThroughput": {
+      "ReadCapacityUnits": 1,
+      "WriteCapacityUnits": 1
+   },
+   "GlobalSecondaryIndexes": [
+      {
+         "IndexName": "MoveNumberIndex",
+         "KeySchema": [
+            {
+               "AttributeName": "gameId",
+               "KeyType": "HASH"
+            },
+            {
+               "AttributeName": "itemType",
+               "KeyType": "RANGE"
+            }
+         ],
+         "Projection": {
+            "ProjectionType": "ALL"
+         },
+         "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+         }
+      },
+      {
+         "IndexName": "PlayerIndex",
+         "KeySchema": [
+            {
+               "AttributeName": "gameId",
+               "KeyType": "HASH"
+            },
+            {
+               "AttributeName": "Id",
+               "KeyType": "RANGE"
+            }
+         ],
+         "Projection": {
+            "ProjectionType": "ALL"
+         },
+         "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+         }
+      },
+      {
+         "IndexName": "CounterIndex",
+         "KeySchema": [
+            {
+               "AttributeName": "itemType",
+               "KeyType": "HASH"
+            },
+            {
+               "AttributeName": "gameId",
+               "KeyType": "RANGE"
+            }
+         ],
+         "Projection": {
+            "ProjectionType": "ALL"
+         },
+         "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+         }
+      }
+   ]
+}

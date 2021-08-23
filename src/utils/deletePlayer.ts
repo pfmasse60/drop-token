@@ -4,7 +4,6 @@ import AWS from 'aws-sdk';
 import { returnState } from '../utils/returnState';
 import { isGamePlayer } from '../utils/isGamePlayer';
 import { makeMove } from '../utils/makeMove';
-import { moveCounter } from './moveCounter';
 
 
 export interface DeletedPlayer {
@@ -15,13 +14,22 @@ export interface DeletedPlayer {
 const TABLE_NAME = process.env.gameTableName;
 
 export const deletePlayer = async (params: DeletedPlayer) => {
-    const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+    let options = {};
+    if (process.env.IS_OFFLINE) {
+		options = {
+        region: 'localhost',
+        endpoint: 'http://localhost:8000',
+		}
+    }
+
+    const dynamodb = new AWS.DynamoDB.DocumentClient(options);
     const {gameId, playerId} = params as unknown as DeletedPlayer;
 
     const gameState = await returnState(gameId);
 
     if (!gameState || await isGamePlayer(gameId, playerId) === false) {
-      return({'statusCode': 404});
+        return({'statusCode': 404});
     }
     
     if (gameState.state === 'DONE'){
@@ -44,10 +52,9 @@ export const deletePlayer = async (params: DeletedPlayer) => {
     catch (e) {
         return(e.message)
     }
-    const move_number = await moveCounter(gameId);
     
     try {
-        await makeMove({gameId, playerId, moveType: 'quit', move_number});
+        await makeMove({gameId, playerId, moveType: 'quit'});
     }
     catch (e) {
         return(e.message)

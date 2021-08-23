@@ -9,7 +9,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     switch(data.statusCode) {
       case 404:
-        return Responses._404({'message': 'Game/moves not found'});
+        // return Responses._404({'message': 'Game/moves not found'});
+        return Responses._404(data.data);
       case 400:
         return Responses._400({'message': 'Malformed request'});
       default:

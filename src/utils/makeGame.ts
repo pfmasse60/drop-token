@@ -13,8 +13,15 @@ const TABLE_NAME = process.env.gameTableName;
 const STATE = process.env.gameState;
 
 export const makeGame = async (body: any) => {
-	const dynamodb = new AWS.DynamoDB.DocumentClient();
- 	let {players, columns, rows}: Game = JSON.parse(body);
+	let options = {};
+    if (process.env.IS_OFFLINE) {
+		options = {
+        region: 'localhost',
+        endpoint: 'http://localhost:8000',
+		}
+    }
+	const dynamodb = new AWS.DynamoDB.DocumentClient(options);
+	let {players, columns, rows}: Game = JSON.parse(body);
 
 	const Id = uuidv4();
 	const [player1, player2] = players;
@@ -29,16 +36,19 @@ export const makeGame = async (body: any) => {
 			columns,
 			rows,
 			state: STATE,
-			winner: null
+			winner: null,
+			col0: 	[],
+			col1:	[],
+			col2:	[],
+			col3:	[]
 		}
 	}
 	
 	try {
 		await dynamodb.put(newGameParams).promise()
-	  	} catch (e) {
+	} catch (e) {
 			return(e.message)
-	  	}
-		  
+	}
 
 		let playerParams = {
 			TableName: TABLE_NAME as string,
