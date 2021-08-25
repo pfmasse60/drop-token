@@ -1,6 +1,4 @@
 import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
-// import AWS from "aws-sdk";
-// const TABLE_NAME = process.env.gameTableName;
 import { returnState } from '../utils/returnState';
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
@@ -39,52 +37,3 @@ const responseApi = {
     };
   }
 };
-
-//   const params = {
-//     ExpressionAttributeValues: {
-//       ":itemtype": "game",
-//       ":Id": Id
-//     },
-//     ExpressionAttributeNames: {
-//       "#state": "state"
-//     },
-//     KeyConditionExpression: 'itemType = :itemtype and Id = :Id',
-//     ProjectionExpression: "#state, player1, player2, winner",
-//     TableName: TABLE_NAME as string,
-//   }
-
-// const game: {[key: string]: any} = await dynamodb.query(params).promise();
-// if (game) {
-//   const Items = game.Items[0];
-//     const gameState = {
-//       "players": [
-//         Items.player1,
-//         Items.player2
-//       ],
-//         "state": Items.state,
-//         "winner": Items.winner
-//     }
-
-  //   return {
-  //     statusCode: 200,
-  //     body: JSON.stringify(
-  //       {
-  //         message: gameState
-  //       },
-  //       null,
-  //       2
-  //     ),
-  //   }
-  // };
-
-  // return {
-  //   statusCode: 200,
-  //   body: JSON.stringify(
-  //     {
-  //       message: "No Games found"
-  //     },
-  //     null,
-  //     2
-  //   ),
-  // }
-  // }
