@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import {isWinner} from '../utils/isWinner';
+import {isWinner} from '../common/isWinner';
 
 let options = {};
 if (process.env.IS_OFFLINE) {
@@ -65,11 +65,9 @@ export const gameboard = {
                 }
             }
             await dynamodb.update(params).promise();
-            // if (board[column].length === rows) {
                 if (isWinner(player, board, column, rows, columns) === true) {
                     return JSON.stringify({'statusCode': 200, 'message': `${player} Wins!`, 'body': board});
                 }
-            // }
             return JSON.stringify({'statusCode': 200, 'message': 'Success', 'body': board}); 
         } else {
             return(JSON.stringify({'statusCode': 400, 'message': 'Illegal Move', 'body': board}));

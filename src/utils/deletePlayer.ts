@@ -1,8 +1,6 @@
-'use strict'
-
 import AWS from 'aws-sdk';
-import { returnState } from '../utils/returnState';
-import { isGamePlayer } from '../utils/isGamePlayer';
+import { returnState } from '../common/getState';
+import { isGamePlayer } from '../common/isGamePlayer';
 import { makeMove } from '../utils/makeMove';
 
 

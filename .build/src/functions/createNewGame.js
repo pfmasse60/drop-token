@@ -1,28 +1,46 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const makeGame_1 = require("../utils/makeGame");
+const API_Responses_1 = __importDefault(require("../common/API_Responses"));
+const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
+const uuid_1 = require("uuid");
+const STATE = process.env.gameState;
+const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
-    if (event && event.body) {
-        const { players, columns, rows } = JSON.parse(event.body);
-        if (!players || !columns || !rows || players.length < 2) {
-            return responseApi._400({ body: { message: 'Malformed request' } });
-        }
-    }
-    return responseApi._200({ "gameId": await makeGame_1.makeGame(event.body) });
+    const gameId = uuid_1.v4();
+    const { players, columns, rows } = JSON.parse(event.body);
+    if (!players || !columns || !rows)
+        return API_Responses_1.default._400({ 'message': 'Malformed Requst' });
+    const [player1, player2] = players;
+    await API_Dynamodb_1.default.put(TABLE_NAME, {
+        itemType: 'game',
+        Id: gameId,
+        player1,
+        player2,
+        columns,
+        rows,
+        state: STATE,
+        winner: null,
+        col0: [],
+        col1: [],
+        col2: [],
+        col3: []
+    });
+    await API_Dynamodb_1.default.put(TABLE_NAME, {
+        itemType: 'player',
+        Id: uuid_1.v4(),
+        gameId: gameId,
+        playerName: player1
+    });
+    await API_Dynamodb_1.default.put(TABLE_NAME, {
+        itemType: 'player',
+        Id: uuid_1.v4(),
+        gameId: gameId,
+        playerName: player2
+    });
+    return API_Responses_1.default._200({ "gameId": gameId });
 };
 exports.handler = handler;
-const responseApi = {
-    _200: (body) => {
-        return {
-            statusCode: 200,
-            body: JSON.stringify(body, null, 2),
-        };
-    },
-    _400: (body) => {
-        return {
-            statusCode: 400,
-            body: JSON.stringify(body, null, 2),
-        };
-    }
-};

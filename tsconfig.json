@@ -7,6 +7,7 @@
     "rootDir": "./",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     "strictNullChecks": true,                    /* Enable strict null checks. */
     "moduleResolution": "node",                  /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "alwaysStrict": true,
 
     // "baseUrl": "./",
     "paths": {

@@ -1,5 +1,6 @@
-import AWS from "aws-sdk";
+// import AWS from "aws-sdk";
 const TABLE_NAME = process.env.gameTableName;
+import Dynamo from '../common/API_Dynamodb';
 
 export default async(gameId: string) => {
 
@@ -11,7 +12,7 @@ export default async(gameId: string) => {
 		}
     }
 
-    const dynamodb = new AWS.DynamoDB.DocumentClient(options);
+    // const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
     const params = {
         ExpressionAttributeValues: {
@@ -26,9 +27,9 @@ export default async(gameId: string) => {
         TableName: TABLE_NAME as string,
     }
 
-    const game: {[key: string]: any} = await dynamodb.query(params).promise();
+    const game = await Dynamo.query(params);
 
-    if (game?.Items[0] == undefined) {
+    if (!game || game?.Items == undefined) {
         return false;
     }
     return true;

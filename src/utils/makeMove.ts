@@ -3,8 +3,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import AWS from 'aws-sdk';
 import { moveCounter } from './moveCounter';
-import isGame from '../queries/isGame';
-import Responses from '../functions/API_Responses';
+import isGame from '../common/isGame';
+import Responses from '../common/API_Responses';
 
 export interface MoveParams {
 	gameId: string,

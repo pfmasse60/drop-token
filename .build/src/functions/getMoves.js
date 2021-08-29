@@ -4,24 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const API_Responses_1 = __importDefault(require("./API_Responses"));
+// import AWS from 'aws-sdk';
+const API_Responses_1 = __importDefault(require("../common/API_Responses"));
+const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
 const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
-    let options = {};
-    if (process.env.IS_OFFLINE) {
-        options = {
-            region: 'localhost',
-            endpoint: 'http://localhost:8000',
-        };
-    }
     const { gameId } = event.pathParameters;
-    const dynamodb = new aws_sdk_1.default.DynamoDB.DocumentClient(options);
     const search = event.queryStringParameters;
-    let start = search?.start;
-    let until = search?.until;
+    console.log(search);
     let qParams;
-    if (start == null || until == null) {
+    if (search == null) {
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
             ':gameId': gameId,
@@ -42,9 +34,9 @@ const handler = async (event) => {
         };
     }
     else {
-        let startInt = parseInt(start);
-        let untilInt = parseInt(until);
-        if (untilInt < startInt || startInt <= 0) {
+        let startInt = +search.start;
+        let untilInt = +search.until;
+        if (untilInt < startInt || startInt < 0) {
             return API_Responses_1.default._400({ 'message': 'Malformed request' });
         }
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
@@ -70,11 +62,10 @@ const handler = async (event) => {
             IndexName: 'MoveNumberIndex'
         };
     }
-    // return Responses._400({'message': qParams});
-    const data = await dynamodb.query(qParams).promise();
-    if (data.Items && data.Items.length > 0) {
-        return API_Responses_1.default._200({ 'moves': data.Items });
+    const data = await API_Dynamodb_1.default.query(qParams);
+    if (!data || data?.Items == undefined) {
+        return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
     }
-    return API_Responses_1.default._404({ 'message': data });
+    return API_Responses_1.default._200({ 'moves': data.Items });
 };
 exports.handler = handler;

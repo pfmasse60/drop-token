@@ -7,8 +7,8 @@ exports.makeMove = void 0;
 const uuid_1 = require("uuid");
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const moveCounter_1 = require("./moveCounter");
-const isGame_1 = __importDefault(require("../queries/isGame"));
-const API_Responses_1 = __importDefault(require("../functions/API_Responses"));
+const isGame_1 = __importDefault(require("../common/isGame"));
+const API_Responses_1 = __importDefault(require("../common/API_Responses"));
 const TABLE_NAME = process.env.gameTableName;
 const makeMove = async (params) => {
     let options = {};

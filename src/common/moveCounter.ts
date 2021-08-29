@@ -58,7 +58,7 @@ export const moveCounter = async(gameId: string):Promise<number> => {
         return(new_count);
 
       } else {
-      const move_count = 1;
+      const move_count = 0;
       const counterParams = {
         TableName: TABLE_NAME as string,
         Item: {
@@ -67,7 +67,7 @@ export const moveCounter = async(gameId: string):Promise<number> => {
           gameId,
           move_count
         }
-		  }
+      }
 
       try {
         await dynamodb.put(counterParams).promise()

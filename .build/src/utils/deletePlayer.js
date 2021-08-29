@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePlayer = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const returnState_1 = require("../utils/returnState");
-const isGamePlayer_1 = require("../utils/isGamePlayer");
+const getState_1 = require("../common/getState");
+const isGamePlayer_1 = require("../common/isGamePlayer");
 const makeMove_1 = require("../utils/makeMove");
 const TABLE_NAME = process.env.gameTableName;
 const deletePlayer = async (params) => {
@@ -19,7 +19,7 @@ const deletePlayer = async (params) => {
     }
     const dynamodb = new aws_sdk_1.default.DynamoDB.DocumentClient(options);
     const { gameId, playerId } = params;
-    const gameState = await returnState_1.returnState(gameId);
+    const gameState = await getState_1.returnState(gameId);
     if (!gameState || await isGamePlayer_1.isGamePlayer(gameId, playerId) === false) {
         return ({ 'statusCode': 404 });
     }
