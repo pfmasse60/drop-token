@@ -1,18 +1,18 @@
+// AWS Lambda API endpoint to retrieve all in progress games
+// Pete Masse - 7/30/2021
+
 import {APIGatewayProxyEvent, APIGatewayProxyHandler} from 'aws-lambda';
-// import AWS from 'aws-sdk';
 import Responses from '../common/API_Responses';
 import Dynamo from '../common/API_Dynamodb';
 
+// Serverless invironment variable set inside serverless.yml
 const TABLE_NAME = process.env.gameTableName;
 
 export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEvent) => {
 
-    const {gameId} = event.pathParameters as unknown as {
-        gameId: string
-    };
+    const {gameId} = event.pathParameters as unknown as {gameId: string};
 
     const search = event.queryStringParameters;
-    console.log(search);
     
     let qParams;
 
@@ -72,7 +72,7 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
     }
     const data = await Dynamo.query(qParams);
 
-    if (!data || data?.Items == undefined) {
+    if (!data || data!.Items == undefined) {
         return Responses._404({'message': 'Game/moves not found'});
     }
     return Responses._200({'moves': data.Items});

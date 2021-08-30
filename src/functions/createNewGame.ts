@@ -1,12 +1,17 @@
+// AWS Lambda API endpoint to create new game
+// Creates new 4 x 4 gameboard and two players
+// Pete Masse - 7/30/2021
+
 import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
 import Responses from '../common/API_Responses';
 import Dynamo from '../common/API_Dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 
+// Serverless invironment variables set inside serverless.yml
 const STATE:string = process.env.gameState!;
 const TABLE_NAME:string = process.env.gameTableName!;
 
-type GameType = {
+type GameBoardType = {
   itemType: string,
   Id: string,
   player1: string,
@@ -38,12 +43,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const gameId:string = uuidv4();
     const {players, columns, rows}: HandlerInputType = JSON.parse(event.body!);
 
-    if(!players || !columns || !rows)
+    if(!players || !columns || !rows || players.length != 2)
       return Responses._400({'message': 'Malformed Requst'});
 
     const [player1, player2] = players;
     
-    await Dynamo.put<GameType>(
+    await Dynamo.put<GameBoardType>(
       TABLE_NAME as string,
       {
         itemType: 'game',

@@ -1,17 +1,18 @@
 "use strict";
+// AWS Lambda API endpoint to retrieve all in progress games
+// Pete Masse - 7/30/2021
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-// import AWS from 'aws-sdk';
 const API_Responses_1 = __importDefault(require("../common/API_Responses"));
 const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
+// Serverless invironment variable set inside serverless.yml
 const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
     const { gameId } = event.pathParameters;
     const search = event.queryStringParameters;
-    console.log(search);
     let qParams;
     if (search == null) {
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
@@ -63,7 +64,7 @@ const handler = async (event) => {
         };
     }
     const data = await API_Dynamodb_1.default.query(qParams);
-    if (!data || data?.Items == undefined) {
+    if (!data || data.Items == undefined) {
         return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
     }
     return API_Responses_1.default._200({ 'moves': data.Items });

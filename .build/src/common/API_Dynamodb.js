@@ -14,7 +14,6 @@ if (process.env.IS_OFFLINE) {
 const dynamodb = new aws_sdk_1.default.DynamoDB.DocumentClient(options);
 exports.default = {
     async put(TableName, Item) {
-        console.log(JSON.stringify(Item, null, 1));
         var params = {
             TableName,
             Item
@@ -27,7 +26,6 @@ exports.default = {
         }
     },
     async update(params) {
-        console.log(JSON.stringify(params, null, 1));
         try {
             await dynamodb.update(params).promise();
         }
@@ -44,7 +42,6 @@ exports.default = {
         catch (e) {
             console.log(e.message);
         }
-        console.log(JSON.stringify(data));
         return data;
     }
 };

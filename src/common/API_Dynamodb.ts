@@ -12,7 +12,6 @@ const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
 export default {
     async put<T>(TableName: string, Item: T) {
-        console.log(JSON.stringify(Item, null, 1));
 		var params = {
 			TableName,
 			Item
@@ -25,7 +24,6 @@ export default {
 	},
 
     async update<T>(params: T) {
-        console.log(JSON.stringify(params, null, 1))
         try {
             await dynamodb.update(params).promise() 
         }
@@ -43,7 +41,6 @@ export default {
         catch (e) {
             console.log(e.message)
         }
-        console.log(JSON.stringify(data));
         return data;
     }
 };

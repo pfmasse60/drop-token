@@ -76,7 +76,7 @@ functions:
           path: /
           method: post
 
-  deletePlayer:
+  quitPlayer:
     handler: src/functions/deletePlayer.handler
     name: deletePlayer
     events:

@@ -1,20 +1,10 @@
-import AWS from "aws-sdk";
 import { v4 as uuidv4 } from 'uuid';
+import Dynamo from '../common/API_Dynamodb';
 
 const TABLE_NAME = process.env.gameTableName;
 export const moveCounter = async(gameId: string):Promise<number> => {
-
-  let options = {};
-  if (process.env.IS_OFFLINE) {
-  options = {
-      region: 'localhost',
-      endpoint: 'http://localhost:8000',
-  }
-  }
-
-    const dynamodb = new AWS.DynamoDB.DocumentClient(options);
-
-    const params = {
+  
+      const data = await Dynamo.query({
         ExpressionAttributeValues: {
           ':itemtype': 'counter',
           ':gameId': gameId
@@ -27,17 +17,16 @@ export const moveCounter = async(gameId: string):Promise<number> => {
         ProjectionExpression: 'move_count, #Id',
         TableName: TABLE_NAME as string,
         IndexName: 'CounterIndex'
-      }
-  
-      const result = await dynamodb.query(params).promise();
+      });
 
-      if(result.Items && result.Items.length > 0) {
-        const myObj = result.Items[0];
+      if(data!.Items && data!.Items.length > 0) {
+        const myObj = data!.Items[0];
 
         let new_count:number = myObj.move_count;
         new_count = new_count + 1;
 
-        const counterParams = {
+        try {
+          await Dynamo.update({
             TableName: TABLE_NAME as string,
             Key: {itemType: 'counter', Id: myObj.Id},
             UpdateExpression: 'set #move_count = :new_count',
@@ -47,10 +36,7 @@ export const moveCounter = async(gameId: string):Promise<number> => {
             ExpressionAttributeValues:{
               ':new_count': new_count
             },
-        };
-
-        try {
-          await dynamodb.update(counterParams).promise() 
+        });
         }
         catch (e) {
           return(e.message)
@@ -59,21 +45,18 @@ export const moveCounter = async(gameId: string):Promise<number> => {
 
       } else {
       const move_count = 0;
-      const counterParams = {
-        TableName: TABLE_NAME as string,
-        Item: {
-          itemType: 'counter',
-          Id: uuidv4(),
-          gameId,
-          move_count
-        }
-      }
 
       try {
-        await dynamodb.put(counterParams).promise()
-          } catch (e) {
-          return(e.message)
-          }
+        await Dynamo.put(TABLE_NAME!,
+          {
+            itemType: 'counter',
+            Id: uuidv4(),
+            gameId,
+            move_count
+          });
+      } catch (e) {
+        return(e.message)
+      }
       return(move_count);
         }
       }
