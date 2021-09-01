@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
-import { returnState } from '../common/getState';
+import getState from '../common/getState';
 import Responses from '../common/API_Responses';
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
@@ -9,7 +9,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return Responses._400({body: {message: 'Malformed request'}})
   }
 
-  const returnedState = await returnState(Id);
+  const returnedState = await getState(Id);
 
   if (!returnedState) {
     return Responses._404({body: {message: 'Game/moves not found'}});

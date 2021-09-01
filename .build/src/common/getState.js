@@ -3,10 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.returnState = void 0;
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const TABLE_NAME = process.env.gameTableName;
-const returnState = async (Id) => {
+exports.default = async (Id) => {
     let options = {};
     if (process.env.IS_OFFLINE) {
         options = {
@@ -40,6 +39,5 @@ const returnState = async (Id) => {
         };
         return gameState;
     }
-    return (game.Items[0]);
+    return (null);
 };
-exports.returnState = returnState;

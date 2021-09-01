@@ -27,7 +27,7 @@ const handler = async (event) => {
         columns,
         rows,
         state: STATE,
-        winner: null,
+        winner: '',
         col0: [],
         col1: [],
         col2: [],
@@ -37,13 +37,15 @@ const handler = async (event) => {
         itemType: 'player',
         Id: uuid_1.v4(),
         gameId: gameId,
-        playerName: player1
+        playerName: player1,
+        winner: false
     });
     await API_Dynamodb_1.default.put(TABLE_NAME, {
         itemType: 'player',
         Id: uuid_1.v4(),
         gameId: gameId,
-        playerName: player2
+        playerName: player2,
+        winner: false
     });
     return API_Responses_1.default._200({ "gameId": gameId });
 };

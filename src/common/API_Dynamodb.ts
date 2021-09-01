@@ -28,7 +28,7 @@ export default {
             await dynamodb.update(params).promise() 
         }
         catch (e) {
-            return(e.message)
+            console.log(e.message);
         }
         return {'statusCode': 202};
     },

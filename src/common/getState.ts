@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 const TABLE_NAME = process.env.gameTableName;
 
-export const returnState = async(Id: string) => {
+export default async(Id: string) => {
 
   let options = {};
   if (process.env.IS_OFFLINE) {
@@ -40,5 +40,5 @@ export const returnState = async(Id: string) => {
           }
       return gameState;
     }
-    return(game.Items[0]);
+    return(null);
 }

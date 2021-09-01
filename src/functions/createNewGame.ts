@@ -19,7 +19,7 @@ type GameBoardType = {
   columns: number,
   rows: number,
   state: string,
-  winner: string | null,
+  winner: string,
   col0: string[],
   col1:	string[],
   col2:	string[],
@@ -30,7 +30,8 @@ type PlayerType = {
   itemType: string,
   Id: string,
   gameId: string,
-  playerName: string  
+  playerName: string,
+  winner: boolean
 }
 
 type HandlerInputType = {
@@ -58,7 +59,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         columns,
         rows,
         state: STATE!,
-        winner: null,
+        winner: '',
         col0: [],
         col1:	[],
         col2:	[],
@@ -71,7 +72,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
           itemType: 'player',
           Id: uuidv4(),
           gameId: gameId,
-          playerName: player1
+          playerName: player1,
+          winner: false
         });
       
       await Dynamo.put<PlayerType>(
@@ -80,7 +82,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
           itemType: 'player',
           Id: uuidv4(),
           gameId: gameId,
-          playerName: player2
+          playerName: player2,
+          winner: false
         });
         
   return Responses._200({"gameId": gameId});

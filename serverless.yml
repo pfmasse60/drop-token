@@ -77,12 +77,12 @@ functions:
           method: post
 
   quitPlayer:
-    handler: src/functions/deletePlayer.handler
-    name: deletePlayer
+    handler: src/functions/quitPlayer.handler
+    name: quitPlayer
     events:
       - httpApi:
           path: /{gameId}/{playerId}
-          method: delete
+          method: put
 
   getGameState:
     handler: src/functions/getGameState.handler
