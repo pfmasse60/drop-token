@@ -9,11 +9,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return Responses._400({body: {message: 'Malformed request'}})
   }
 
-  const returnedState = await getState(Id);
+  const gameState = await getState(Id);
 
-  if (!returnedState) {
+  if (!gameState) {
     return Responses._404({body: {message: 'Game/moves not found'}});
   }
-  return Responses._200({"gameId": returnedState});
+  return Responses._200({"gameId": gameState});
 };
 

@@ -43,5 +43,15 @@ exports.default = {
             console.log(e.message);
         }
         return data;
+    },
+    async query2(params) {
+        let data;
+        try {
+            data = await dynamodb.query(params).promise();
+        }
+        catch (e) {
+            console.log(e.message);
+        }
+        return data?.Items;
     }
 };

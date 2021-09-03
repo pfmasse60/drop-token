@@ -35,8 +35,12 @@ export const makeMove = async (params: MoveParams) => {
 
 	const playerParams = {
 	ExpressionAttributeValues: {
-		':playerId': playerId,
-		':gameId': gameId
+		':playerId': {
+			S: playerId
+		},
+		':gameId': {
+			S: gameId
+		}
 	},
 	ExpressionAttributeNames: {
 		'#playerId': 'Id',

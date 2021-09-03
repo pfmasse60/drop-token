@@ -67,18 +67,18 @@ package:
   individually: true
 
 functions:
-  createNewGame:
-    handler: src/functions/createNewGame.handler
-    name: createNewGame
+  postNewGame:
+    handler: src/functions/postNewGame.handler
+    name: postNewGame
     description: Create a new drop token game
     events:
       - httpApi:
           path: /
           method: post
 
-  quitPlayer:
-    handler: src/functions/quitPlayer.handler
-    name: quitPlayer
+  putPlayer:
+    handler: src/functions/putPlayer.handler
+    name: putPlayer
     events:
       - httpApi:
           path: /{gameId}/{playerId}
@@ -108,9 +108,9 @@ functions:
           path: /{gameId}/{playerId}
           method: post
 
-  returnAllGames:
-    handler: src/functions/returnAllGames.handler
-    name: returnAllGames
+  getAllGames:
+    handler: src/functions/getAllGames.handler
+    name: getAllGames
     events:
       - httpApi:
           path: /

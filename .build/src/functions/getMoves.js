@@ -17,8 +17,12 @@ const handler = async (event) => {
     if (search == null) {
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
-            ':gameId': gameId,
-            ':itemType': 'move'
+            ':gameId': {
+                S: gameId
+            },
+            ':itemType': {
+                S: 'move'
+            }
         };
         let expressionAttNames = {
             '#gameId': 'gameId',
@@ -42,10 +46,18 @@ const handler = async (event) => {
         }
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
-            ':gameId': gameId,
-            ':itemType': 'move',
-            ':start': startInt,
-            ':until': untilInt
+            ':gameId': {
+                S: gameId
+            },
+            ':itemType': {
+                S: 'move'
+            },
+            ':start': {
+                S: startInt + ''
+            },
+            ':until': {
+                S: untilInt + ''
+            }
         };
         let expressionAttNames = {
             '#gameId': 'gameId',

@@ -33,7 +33,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   if (gameState === null || gamePlayer.player === false) {
     return Responses._404({'message': 'Game not found or player is not a part of it'});
   }
-  if (gameState.state === 'DONE')
+  // ToDo: change this back to gameState.state === 'DONE'
+  if ('DONE' === 'DONE')
     return Responses._410({'message': 'Game is already in DONE state'});
     await makeMove({gameId, playerId, moveType: 'quit'});
     // const players = await Dynamo.query({
@@ -56,14 +57,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     const gameStateUpdateParams = {
       TableName: TABLE_NAME as string,
-      Key: {itemType: 'game', Id: gameId},
+      Key: {itemType: {S: 'game'}, Id: {S: gameId}},
       UpdateExpression: 'set #state = :done',
       ExpressionAttributeNames:{
           '#state': 'state'
       },
-      ExpressionAttributeValues:{':done': 'DONE'}
+      ExpressionAttributeValues:{':done': {
+        S: 'DONE'
+      }}
     };  
-  await Dynamo.update(gameStateUpdateParams as gameStatusUpdateType);
+  await Dynamo.update(gameStateUpdateParams);
   return Responses._202({'message': 'Success'});
 }
 

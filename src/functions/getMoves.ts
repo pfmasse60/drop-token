@@ -19,8 +19,12 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
     if (search == null) {
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
-            ':gameId': gameId,
-            ':itemType': 'move'
+            ':gameId': {
+                S: gameId
+            },
+            ':itemType': {
+                S: 'move'
+            }
         };
         let expressionAttNames = {
             '#gameId': 'gameId',
@@ -47,10 +51,18 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
 
         let expressionAttValues = {
-            ':gameId': gameId,
-            ':itemType': 'move',
-            ':start': startInt,
-            ':until': untilInt
+            ':gameId': {
+                S: gameId
+            },
+            ':itemType': {
+                S: 'move'
+            },
+            ':start': {
+                S: startInt+''
+            },
+            ':until': {
+                S: untilInt+''
+            }
         };
 
         let expressionAttNames = {

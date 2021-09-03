@@ -16,9 +16,15 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     const moveParams = {
         ExpressionAttributeValues: {
-            ':gameId': gameId,
-            ':move_number': parseInt(move_number),
-            ':itemType': 'move'
+            ':gameId': {
+                S: gameId
+            },
+            ':move_number': {
+                S: move_number+''
+            },
+            ':itemType': {
+                S: 'move'
+            }
 
         },
         ExpressionAttributeNames: {
@@ -42,8 +48,12 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     const playerParams = {
         ExpressionAttributeValues: {
-            ':playerId': data.Items[0].playerId,
-            ':gameId': gameId
+            ':playerId': {
+                S: data.Items[0].playerId
+            },
+            ':gameId': {
+                S: gameId
+            }
         },
         ExpressionAttributeNames: {
             '#playerId': 'Id',

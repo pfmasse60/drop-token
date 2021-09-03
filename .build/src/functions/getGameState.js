@@ -11,10 +11,10 @@ const handler = async (event) => {
     if (/[ `!@#$%^&*()_]/.test(Id) === true) {
         return API_Responses_1.default._400({ body: { message: 'Malformed request' } });
     }
-    const returnedState = await getState_1.default(Id);
-    if (!returnedState) {
+    const gameState = await getState_1.default(Id);
+    if (!gameState) {
         return API_Responses_1.default._404({ body: { message: 'Game/moves not found' } });
     }
-    return API_Responses_1.default._200({ "gameId": returnedState });
+    return API_Responses_1.default._200({ "gameId": gameState });
 };
 exports.handler = handler;

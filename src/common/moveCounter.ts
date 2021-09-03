@@ -6,8 +6,12 @@ export const moveCounter = async(gameId: string):Promise<number> => {
   
       const data = await Dynamo.query({
         ExpressionAttributeValues: {
-          ':itemtype': 'counter',
-          ':gameId': gameId
+          ':itemtype': {
+            S: 'counter'
+          },
+          ':gameId': {
+            S: gameId
+          }
         },
         ExpressionAttributeNames: {
           '#gameId': 'gameId',
@@ -28,13 +32,15 @@ export const moveCounter = async(gameId: string):Promise<number> => {
         try {
           await Dynamo.update({
             TableName: TABLE_NAME as string,
-            Key: {itemType: 'counter', Id: myObj.Id},
+            Key: {itemType: {S: 'counter'}, Id: myObj.Id},
             UpdateExpression: 'set #move_count = :new_count',
             ExpressionAttributeNames:{
                 '#move_count': 'move_count'
             },
             ExpressionAttributeValues:{
-              ':new_count': new_count
+              ':new_count': {
+                S: new_count +''
+              }
             },
         });
         }

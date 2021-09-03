@@ -7,8 +7,12 @@ export const handler = async () => {
 
   const params = {
     ExpressionAttributeValues: {
-      ":itemtype": "game",
-      ":theState": "IN_PROGRESS"
+      ":itemtype": {
+        S: "game"
+      },
+      ":theState": {
+        S: "IN_PROGRESS"
+      }
     },
     ExpressionAttributeNames: {
       "#state": "state"

@@ -8,8 +8,12 @@ const TABLE_NAME = process.env.gameTableName;
 exports.default = async (gameId) => {
     const game = await API_Dynamodb_1.default.query({
         ExpressionAttributeValues: {
-            ':itemtype': 'game',
-            ':Id': gameId
+            ':itemtype': {
+                S: 'game'
+            },
+            ':Id': {
+                S: gameId
+            }
         },
         ExpressionAttributeNames: {
             "#state": "state"

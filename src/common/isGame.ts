@@ -6,8 +6,12 @@ export default async(gameId: string) => {
 
     const game = await Dynamo.query({
         ExpressionAttributeValues: {
-        ':itemtype': 'game',
-        ':Id': gameId
+        ':itemtype': {
+            S: 'game'
+        },
+        ':Id': {
+            S: gameId
+        }
     },
         ExpressionAttributeNames: {
         "#state": "state"

@@ -1,22 +1,27 @@
-import AWS from "aws-sdk";
+import { QueryInput } from 'aws-sdk/clients/dynamodb';
+import Dynamo from '../common/API_Dynamodb';
 const TABLE_NAME = process.env.gameTableName;
 
 export default async(Id: string) => {
 
-  let options = {};
-  if (process.env.IS_OFFLINE) {
-  options = {
-      region: 'localhost',
-      endpoint: 'http://localhost:8000',
-  }
-  }
+  // let options = {};
+  // if (process.env.IS_OFFLINE) {
+  // options = {
+  //     region: 'localhost',
+  //     endpoint: 'http://localhost:8000',
+  // }
+  // }
 
-    const dynamodb = new AWS.DynamoDB.DocumentClient(options);
+    // const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
     const params = {
       ExpressionAttributeValues: {
-        ":itemtype": "game",
-        ":Id": Id
+        ":itemtype": {
+          S: "game",
+        },
+        ":Id": {
+          S: Id
+        }
       },
       ExpressionAttributeNames: {
         "#state": "state"
@@ -26,19 +31,20 @@ export default async(Id: string) => {
       TableName: TABLE_NAME as string,
     }
 
-    const game: {[key: string]: any} = await dynamodb.query(params).promise();
+    // const game: {[key: string]: any} = await dynamodb.query(params).promise();
+    const data = await Dynamo.query2(params);
+    console.log('GAME' + JSON.stringify(data, null, 1));
 
-    if (game.Count > 0) {
-        const Items = game.Items[0];
-          const gameState = {
-            "players": [
-              Items.player1,
-              Items.player2
-            ],
-              "state": Items.state,
-              "winner": Items.winner
-          }
-      return gameState;
-    }
+    // if (data && data.Items!.length > 0) {{
+    //     const Items = data.Items[0];
+    //       const gameState = {
+    //         "players": [
+    //           Items.player1,
+    //           Items.player2
+    //         ],
+    //           "state": Items.state,
+    //       }
+    //   return gameState;
+    // }
     return(null);
 }

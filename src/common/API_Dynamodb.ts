@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import { QueryInput, UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 
 let options = {};
 if (process.env.IS_OFFLINE) {
@@ -23,7 +24,7 @@ export default {
         }
 	},
 
-    async update<T>(params: T) {
+    async update(params: UpdateItemInput) {
         try {
             await dynamodb.update(params).promise() 
         }
@@ -33,7 +34,7 @@ export default {
         return {'statusCode': 202};
     },
 
-    async query<T>(params: T) {
+    async query(params: QueryInput) {
         let data;
         try {
             data = await dynamodb.query(params).promise() 
@@ -42,5 +43,16 @@ export default {
             console.log(e.message)
         }
         return data;
+    },
+
+    async query2(params: QueryInput) {
+        let data;
+        try {
+            data = await dynamodb.query(params).promise() 
+        }
+        catch (e) {
+            console.log(e.message)
+        }
+        return data?.Items;
     }
 };

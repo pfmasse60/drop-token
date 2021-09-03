@@ -10,8 +10,12 @@ const TABLE_NAME = process.env.gameTableName;
 const moveCounter = async (gameId) => {
     const data = await API_Dynamodb_1.default.query({
         ExpressionAttributeValues: {
-            ':itemtype': 'counter',
-            ':gameId': gameId
+            ':itemtype': {
+                S: 'counter'
+            },
+            ':gameId': {
+                S: gameId
+            }
         },
         ExpressionAttributeNames: {
             '#gameId': 'gameId',
@@ -29,13 +33,15 @@ const moveCounter = async (gameId) => {
         try {
             await API_Dynamodb_1.default.update({
                 TableName: TABLE_NAME,
-                Key: { itemType: 'counter', Id: myObj.Id },
+                Key: { itemType: { S: 'counter' }, Id: myObj.Id },
                 UpdateExpression: 'set #move_count = :new_count',
                 ExpressionAttributeNames: {
                     '#move_count': 'move_count'
                 },
                 ExpressionAttributeValues: {
-                    ':new_count': new_count
+                    ':new_count': {
+                        S: new_count + ''
+                    }
                 },
             });
         }

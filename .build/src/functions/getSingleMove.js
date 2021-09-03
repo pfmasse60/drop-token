@@ -12,9 +12,15 @@ const handler = async (event) => {
     // const data = await returnMove({gameId, move_number});
     const moveParams = {
         ExpressionAttributeValues: {
-            ':gameId': gameId,
-            ':move_number': parseInt(move_number),
-            ':itemType': 'move'
+            ':gameId': {
+                S: gameId
+            },
+            ':move_number': {
+                S: move_number + ''
+            },
+            ':itemType': {
+                S: 'move'
+            }
         },
         ExpressionAttributeNames: {
             '#gameId': 'gameId',
@@ -34,8 +40,12 @@ const handler = async (event) => {
     }
     const playerParams = {
         ExpressionAttributeValues: {
-            ':playerId': data.Items[0].playerId,
-            ':gameId': gameId
+            ':playerId': {
+                S: data.Items[0].playerId
+            },
+            ':gameId': {
+                S: gameId
+            }
         },
         ExpressionAttributeNames: {
             '#playerId': 'Id',
