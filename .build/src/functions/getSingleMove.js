@@ -9,18 +9,11 @@ const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
 const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
     const { gameId, move_number } = event.pathParameters;
-    // const data = await returnMove({gameId, move_number});
     const moveParams = {
         ExpressionAttributeValues: {
-            ':gameId': {
-                S: gameId
-            },
-            ':move_number': {
-                S: move_number + ''
-            },
-            ':itemType': {
-                S: 'move'
-            }
+            ':gameId': gameId,
+            ':move_number': +move_number,
+            ':itemType': 'move'
         },
         ExpressionAttributeNames: {
             '#gameId': 'gameId',
@@ -40,12 +33,8 @@ const handler = async (event) => {
     }
     const playerParams = {
         ExpressionAttributeValues: {
-            ':playerId': {
-                S: data.Items[0].playerId
-            },
-            ':gameId': {
-                S: gameId
-            }
+            ':playerId': data.Items[0].playerId,
+            ':gameId': gameId
         },
         ExpressionAttributeNames: {
             '#playerId': 'Id',
@@ -66,17 +55,10 @@ const handler = async (event) => {
     if (playerName?.Items && playerName?.Items?.length > 0) {
         playerName = playerName.Items[0];
     }
-    // switch(data.statusCode) {
-    //   case 404:
-    //     return Responses._404(data.data);
-    //   case 400:
-    //     return Responses._400({'message': 'Malformed request'});
-    //   default:
     return API_Responses_1.default._202({
         'type': data.Items[0].itemType,
         'player': playerName.playerName,
         'column': data.Items[0].column
     });
-    // }
 };
 exports.handler = handler;

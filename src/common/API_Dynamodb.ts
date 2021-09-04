@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import { QueryInput, UpdateItemInput } from 'aws-sdk/clients/dynamodb';
+import { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 
 let options = {};
 if (process.env.IS_OFFLINE) {
@@ -24,7 +24,7 @@ export default {
         }
 	},
 
-    async update(params: UpdateItemInput) {
+    async update(params: AWS.DynamoDB.DocumentClient.UpdateItemInput) {
         try {
             await dynamodb.update(params).promise() 
         }
@@ -34,7 +34,7 @@ export default {
         return {'statusCode': 202};
     },
 
-    async query(params: QueryInput) {
+    async query(params: AWS.DynamoDB.DocumentClient.QueryInput) {
         let data;
         try {
             data = await dynamodb.query(params).promise() 
@@ -45,7 +45,7 @@ export default {
         return data;
     },
 
-    async query2(params: QueryInput) {
+    async query2(params: AWS.DynamoDB.DocumentClient.QueryInput) {
         let data;
         try {
             data = await dynamodb.query(params).promise() 

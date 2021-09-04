@@ -4,24 +4,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-// import { APIGatewayProxyHandler } from 'aws-lambda';
 const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
 const TABLE_NAME = process.env.gameTableName;
 const handler = async () => {
     const params = {
         ExpressionAttributeValues: {
-            ":itemtype": {
-                S: "game"
-            },
-            ":theState": {
-                S: "IN_PROGRESS"
-            }
+            ":itemtype": "game",
+            ":state": "IN_PROGRESS"
         },
         ExpressionAttributeNames: {
             "#state": "state"
         },
         KeyConditionExpression: 'itemType = :itemtype',
-        FilterExpression: '#state = :theState',
+        FilterExpression: '#state = :state',
         ProjectionExpression: "Id",
         TableName: TABLE_NAME,
     };

@@ -9,12 +9,8 @@ const TABLE_NAME = process.env.gameTableName;
 const isGamePlayer = async (gameId, playerId) => {
     const data = await API_Dynamodb_1.default.query({
         ExpressionAttributeValues: {
-            ':playerId': {
-                S: playerId
-            },
-            ':gameId': {
-                S: gameId
-            }
+            ':playerId': playerId,
+            ':gameId': gameId
         },
         ExpressionAttributeNames: {
             '#playerId': 'Id',

@@ -8,21 +8,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const API_Responses_1 = __importDefault(require("../common/API_Responses"));
 const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
+const isGame_1 = __importDefault(require("../common/isGame"));
 // Serverless invironment variable set inside serverless.yml
 const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
     const { gameId } = event.pathParameters;
+    if (await isGame_1.default(gameId) === false) {
+        return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
+    }
     const search = event.queryStringParameters;
     let qParams;
     if (search == null) {
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
-            ':gameId': {
-                S: gameId
-            },
-            ':itemType': {
-                S: 'move'
-            }
+            ':gameId': gameId,
+            ':itemType': 'move'
         };
         let expressionAttNames = {
             '#gameId': 'gameId',
@@ -46,18 +46,10 @@ const handler = async (event) => {
         }
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
-            ':gameId': {
-                S: gameId
-            },
-            ':itemType': {
-                S: 'move'
-            },
-            ':start': {
-                S: startInt + ''
-            },
-            ':until': {
-                S: untilInt + ''
-            }
+            ':gameId': gameId,
+            ':itemType': 'move',
+            ':start': startInt,
+            ':until': untilInt
         };
         let expressionAttNames = {
             '#gameId': 'gameId',
@@ -76,9 +68,6 @@ const handler = async (event) => {
         };
     }
     const data = await API_Dynamodb_1.default.query(qParams);
-    if (!data || data.Items == undefined) {
-        return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
-    }
     return API_Responses_1.default._200({ 'moves': data.Items });
 };
 exports.handler = handler;

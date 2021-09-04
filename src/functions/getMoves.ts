@@ -4,6 +4,7 @@
 import {APIGatewayProxyEvent, APIGatewayProxyHandler} from 'aws-lambda';
 import Responses from '../common/API_Responses';
 import Dynamo from '../common/API_Dynamodb';
+import isGame from '../common/isGame';
 
 // Serverless invironment variable set inside serverless.yml
 const TABLE_NAME = process.env.gameTableName;
@@ -12,19 +13,18 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
 
     const {gameId} = event.pathParameters as unknown as {gameId: string};
 
+    if (await isGame(gameId) === false) {
+        return Responses._404({'message': 'Game/moves not found'});
+    }
+
     const search = event.queryStringParameters;
-    
     let qParams;
 
     if (search == null) {
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
         let expressionAttValues = {
-            ':gameId': {
-                S: gameId
-            },
-            ':itemType': {
-                S: 'move'
-            }
+            ':gameId': gameId,
+            ':itemType': 'move'
         };
         let expressionAttNames = {
             '#gameId': 'gameId',
@@ -51,18 +51,10 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
         let keyCondition = '#gameId = :gameId and #itemType = :itemType';
 
         let expressionAttValues = {
-            ':gameId': {
-                S: gameId
-            },
-            ':itemType': {
-                S: 'move'
-            },
-            ':start': {
-                S: startInt+''
-            },
-            ':until': {
-                S: untilInt+''
-            }
+            ':gameId': gameId,
+            ':itemType': 'move',
+            ':start': startInt,
+            ':until': untilInt
         };
 
         let expressionAttNames = {
@@ -83,9 +75,6 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
         }
     }
     const data = await Dynamo.query(qParams);
-
-    if (!data || data!.Items == undefined) {
-        return Responses._404({'message': 'Game/moves not found'});
-    }
-    return Responses._200({'moves': data.Items});
+    
+    return Responses._200({'moves': data!.Items});
 }

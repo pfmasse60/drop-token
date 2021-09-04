@@ -6,12 +6,8 @@ export default async(gameId: string) => {
 
     const game = await Dynamo.query({
         ExpressionAttributeValues: {
-        ':itemtype': {
-            S: 'game'
-        },
-        ':Id': {
-            S: gameId
-        }
+        ':itemtype': 'game',
+        ':Id': gameId
     },
         ExpressionAttributeNames: {
         "#state": "state"
@@ -21,7 +17,7 @@ export default async(gameId: string) => {
         TableName: TABLE_NAME as string,
     });
 
-    if (!game || game!.Items == undefined) {
+    if (game!.Items?.length === 0) {
         return false;
     }
     return true;
