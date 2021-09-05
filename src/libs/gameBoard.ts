@@ -8,13 +8,13 @@ if (process.env.IS_OFFLINE) {
         endpoint: 'http://localhost:8000'
     }
 }
+
 const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 const TABLE_NAME = process.env.gameTableName;
 
-
-export const gameboard = {
+export default {
     async add(column : number, player : string, gameId : string) {
-        let board: string[][] = [[], [], [], []];
+        let localGameBoard: string[][] = [[], [], [], []];
 
         const params2 = {
             ExpressionAttributeValues: {
@@ -31,25 +31,25 @@ export const gameboard = {
             ProjectionExpression: 'col0, col1, col2, col3, #rows, #columns',
             TableName: TABLE_NAME as string
         }
-        const number = await dynamodb.query(params2).promise();
-        if (number && number.Items) {
-            number.Items[0].col0.forEach((val : string) => {
-                board[0].push(val);
+        const remoteGameBoard = await dynamodb.query(params2).promise();
+        if (remoteGameBoard && remoteGameBoard.Items) {
+            remoteGameBoard.Items[0].col0.forEach((val : string) => {
+                localGameBoard[0].push(val);
             }),
-            number.Items[0].col1.forEach((val : string) => {
-                board[1].push(val);
+            remoteGameBoard.Items[0].col1.forEach((val : string) => {
+                localGameBoard[1].push(val);
             }),
-            number.Items[0].col2.forEach((val : string) => {
-                board[2].push(val);
+            remoteGameBoard.Items[0].col2.forEach((val : string) => {
+                localGameBoard[2].push(val);
             }),
-            number.Items[0].col3.forEach((val : string) => {
-                board[3].push(val);
+            remoteGameBoard.Items[0].col3.forEach((val : string) => {
+                localGameBoard[3].push(val);
             })
-            var rows = number.Items[0].rows;
-            var columns = number.Items[0].columns;
+            var rows = remoteGameBoard.Items[0].rows;
+            var columns = remoteGameBoard.Items[0].columns;
         }
-        if (board[column].length < rows) {
-            board[column].push(player);
+        if (localGameBoard[column].length < rows) {
+            localGameBoard[column].push(player);
             const params = {
                 TableName: TABLE_NAME as string,
                 Key: {
@@ -65,12 +65,15 @@ export const gameboard = {
                 }
             }
             await dynamodb.update(params).promise();
-                if (isWinner(player, board, column, rows, columns) === true) {
-                    return JSON.stringify({'statusCode': 200, 'message': `${player} Wins!`, 'body': board});
+                if (isWinner(player, localGameBoard, column, rows, columns) === true) {
+                    return 'winner';
+                    // return JSON.stringify({'statusCode': 200, 'message': `${player} Wins!`, 'body': localGameBoard});
                 }
-            return JSON.stringify({'statusCode': 200, 'message': 'Success', 'body': board}); 
+            // return JSON.stringify({'statusCode': 200, 'message': 'Success', 'body': localGameBoard});
+                return 'success';
         } else {
-            return(JSON.stringify({'statusCode': 400, 'message': 'Illegal Move', 'body': board}));
+            // return(JSON.stringify({'statusCode': 400, 'message': 'Illegal Move', 'body': localGameBoard}));
+            return 'illegal';
         }
     }
 }

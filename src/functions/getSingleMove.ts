@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
 import Responses from '../common/API_Responses';
 import Dynamo from '../common/API_Dynamodb';
+import isGame from '../common/isGame';
 
 interface MoveRequestParams {
     gameId: string,
@@ -11,6 +12,10 @@ const TABLE_NAME = process.env.gameTableName;
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
     const {gameId, move_number} = event.pathParameters as unknown as MoveRequestParams;
+
+	if(await isGame(gameId) === false) {
+		return Responses._404({'message': 'Game/moves not found'});
+	};
 
     const moveParams = {
         ExpressionAttributeValues: {
@@ -32,10 +37,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
 
     const data = await Dynamo.query(moveParams);
-    if (!data?.Items || data.Items?.length <= 0) {
-        return({'statusCode': 404});
-    }
 
+    if (!data?.Items || data.Items?.length <= 0) {
+        return Responses._404({'message': 'Game/moves not found'});
+    }
+    
     const playerParams = {
         ExpressionAttributeValues: {
             ':playerId': data.Items[0].playerId,

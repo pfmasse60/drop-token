@@ -1,4 +1,4 @@
-import Dynamo from '../common/API_Dynamodb';
+import Dynamo from './API_Dynamodb';
 
 const TABLE_NAME = process.env.gameTableName;
 

@@ -1,11 +1,13 @@
 'use strict'
 
-import { v4 as uuidv4 } from 'uuid';
-// import AWS from 'aws-sdk';
+// import { v4 as uuidv4 } from 'uuid';
 import { moveCounter } from './moveCounter';
-import isGame from './isGame';
-import Responses from './API_Responses';
+// import isGame from './isGame';
+// import Responses from './API_Responses';
 import Dynamo from './API_Dynamodb';
+import gameboard from '../libs/gameBoard';
+// import { isGamePlayer } from './isPlayer';
+// import setGameState from './setGameState';
 
 export interface MoveParams {
 	gameId: string,
@@ -17,21 +19,14 @@ export interface MoveParams {
 const TABLE_NAME = process.env.gameTableName;
 
 export const makeMove = async (params: MoveParams) => {
+	
+	let { gameId, playerId, column = 0, move_type = 'move' } = params;
+	let result:  "winner" | "success" | "illegal" | null = null;
+	// const gamePlayer = await isGamePlayer(gameId, playerId);
 
-	// let options = {};
-    // if (process.env.IS_OFFLINE) {
-	// 	options = {
-    //     region: 'localhost',
-    //     endpoint: 'http://localhost:8000',
-	// 	}
-    // }
-
-	// const dynamodb = new AWS.DynamoDB.DocumentClient(options);
-	let { gameId, playerId, moveType = 'move', column = 0 } = params;
-
-	if(!await isGame(gameId)) {
-		return Responses._404({'message': 'Game not found or player is not a part of it.'});
-	};
+	// if(!await isGame(gameId) || gamePlayer.player === false) {
+	// 	return Responses._404({'message': 'Game not found or player is not a part of it.'});
+	// };
 
 	const playerParams = {
 	ExpressionAttributeValues: {
@@ -50,24 +45,53 @@ export const makeMove = async (params: MoveParams) => {
 	const playerName = await Dynamo.query(playerParams);
 	const move_number = await moveCounter(gameId);
 	
-	if(playerName!.Items && playerName!.Items.length > 0) {
-		try {
-			await Dynamo.put(
-			TABLE_NAME as string,
-			{
-				itemType: 'move',
-				Id: uuidv4(),
-				gameId,
-				playerId,
-				playerName: playerName!.Items[0].playerName,
-				moveType,
-				move_number,
-				column
-			});
-			// await Dynamo.put(TABLE_NAME as string, newMoveParams)
-		} catch (e) {
-			console.log(e.message);
-		}
-		return(gameId + "/moves/" + move_number);
+	
+	if (playerName && playerName.Items) {
+		const PlayerName = playerName.Items[0].playerName
+		result = await gameboard.add(column, PlayerName as string, gameId);
+	
+	return {result, move_number, PlayerName};
+	// switch(result) {
+	// 	case 'success': 
+	// 		try {
+	// 			await Dynamo.put(
+	// 			TABLE_NAME as string,
+	// 			{
+	// 				itemType: 'move',
+	// 				Id: uuidv4(),
+	// 				gameId,
+	// 				playerId,
+	// 				playerName: playerName!.Items[0].playerName,
+	// 				moveType,
+	// 				move_number,
+	// 				column
+	// 			});
+	// 		} catch (e) {
+	// 			console.log(e.message);
+	// 		}
+	// 		await setGameState(gameId, 'DONE');
+	// 		return {'statusCode': 200, 'message': `${gameId}/moves/${move_number}`};
+	// 	case 'winner': 
+	// 		try {
+	// 		await Dynamo.put(
+	// 			TABLE_NAME as string,
+	// 			{
+	// 				itemType: 'move',
+	// 				Id: uuidv4(),
+	// 				gameId,
+	// 				playerId,
+	// 				playerName: playerName!.Items[0].playerName,
+	// 				moveType,
+	// 				move_number,
+	// 				column
+	// 			});
+	// 		} catch (e) {
+	// 			console.log(e.message);
+	// 		}
+	// 		return JSON.stringify({'statusCode': 200, 'message': `${gameId}/moves/${move_number}`});
+	// 	default:
+	// 		return {'statusCode': 400, 'message': 'Illegal Move'};
+
+	// 	}
 	}
 }

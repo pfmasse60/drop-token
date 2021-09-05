@@ -6,9 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const API_Responses_1 = __importDefault(require("../common/API_Responses"));
 const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
+const isGame_1 = __importDefault(require("../common/isGame"));
 const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
     const { gameId, move_number } = event.pathParameters;
+    if (await isGame_1.default(gameId) === false) {
+        return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
+    }
+    ;
     const moveParams = {
         ExpressionAttributeValues: {
             ':gameId': gameId,
@@ -29,7 +34,7 @@ const handler = async (event) => {
     };
     const data = await API_Dynamodb_1.default.query(moveParams);
     if (!data?.Items || data.Items?.length <= 0) {
-        return ({ 'statusCode': 404 });
+        return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
     }
     const playerParams = {
         ExpressionAttributeValues: {

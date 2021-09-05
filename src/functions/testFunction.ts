@@ -1,8 +1,19 @@
 // import AWS from 'aws-sdk';
 // import { makeMove } from '../utils/makeMove';
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { gameboard } from '../libs/gameBoard'
+import gameboard from '../libs/gameBoard';
 
+import Dynamo from '../common/API_Dynamodb';
+
+export interface MoveParams {
+	gameId: string,
+	playerId: string,
+	moveType: string,
+	column?: number,
+	move_number?: string
+}
+
+const TABLE_NAME = process.env.gameTableName;
 // let td: string[][] = [
 //     [],
 //     [],
@@ -13,11 +24,32 @@ import { gameboard } from '../libs/gameBoard'
 export const handler = async (event: APIGatewayProxyEvent) => {
 
     if (event && event.body){
-    
-    const {player, column, gameId} = JSON.parse(event.body);
+        const {column} = JSON.parse(event.body);
+        
+        const {gameId, playerId} = event.pathParameters as unknown as MoveParams;
 
-        return gameboard.add(column, player, gameId);
-    
+        const playerParams = {
+            ExpressionAttributeValues: {
+                ':playerId': playerId,
+                ':gameId': gameId
+            },
+            ExpressionAttributeNames: {
+                '#playerId': 'Id',
+                '#gameId': 'gameId'
+            },
+            KeyConditionExpression: '#playerId = :playerId and #gameId = :gameId',
+            ProjectionExpression: 'playerName',
+            TableName: TABLE_NAME as string,
+            IndexName: 'PlayerIndex'
+            }
+            const playerName = await Dynamo.query(playerParams);
+
+            console.log(playerName);
+            // return playerName?.Items;
+
+        return gameboard.add(column, playerName?.Items[0]?.playerName as string, gameId);
+    }
+}
 
     // let options = {};
     // if (process.env.IS_OFFLINE) {
@@ -102,11 +134,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
             // console.log(game);
             // return(game);
-        
-}
 
-
-}
 
 // const gameboard = {
 //     add(column: number, player: string) {

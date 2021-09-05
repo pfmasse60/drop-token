@@ -129,7 +129,7 @@ functions:
     name: testFunction
     events:
       - httpApi:
-          path: /
+          path: /{gameId}/{playerId}
           method: PATCH          
 
 resources:

@@ -22,7 +22,6 @@ const moveCounter = async (gameId) => {
         TableName: TABLE_NAME,
         IndexName: 'CounterIndex'
     });
-    console.log('DATA' + JSON.stringify(data, null, 1));
     if (data.Items && data.Items.length > 0) {
         const myObj = data.Items[0];
         let new_count = myObj.move_count;

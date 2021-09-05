@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import { returnState } from '../common/getState';
-import { isGamePlayer } from '../common/isGamePlayer';
+import { isGamePlayer } from '../common/isPlayer';
 import { makeMove } from '../utils/makeMove';
 
 

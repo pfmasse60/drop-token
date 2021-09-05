@@ -18,7 +18,7 @@ export const moveCounter = async(gameId: string):Promise<number> => {
         TableName: TABLE_NAME as string,
         IndexName: 'CounterIndex'
       });
-      console.log('DATA' + JSON.stringify(data, null, 1));
+
       if(data!.Items && data!.Items.length > 0) {
         const myObj = data!.Items[0];
 

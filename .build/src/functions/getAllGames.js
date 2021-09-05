@@ -18,14 +18,17 @@ const handler = async () => {
         KeyConditionExpression: 'itemType = :itemtype',
         FilterExpression: '#state = :state',
         ProjectionExpression: "Id",
-        TableName: TABLE_NAME,
+        TableName: TABLE_NAME
     };
     const games = await API_Dynamodb_1.default.query(params);
+    console.log(games);
     if (games && games.Items) {
         var newArray = games.Items.map(function (item) {
             return [item.Id].join(" ");
         });
-        return (JSON.stringify({ "games": newArray }, null, 2));
+        return (JSON.stringify({
+            "games": newArray
+        }, null, 2));
     }
     else {
         return (JSON.stringify({ "games": [] }));
