@@ -29,7 +29,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   if (gameState.state === 'DONE')
     return Responses._410({'message': 'Game is already in DONE state'});
     
-  await makeMove({gameId, playerId, moveType: 'quit'});
+  await makeMove({gameId, playerId, move_type: 'quit'});
   await setGameState(gameId, 'DONE');
   
   //   const gameStateUpdateParams = {

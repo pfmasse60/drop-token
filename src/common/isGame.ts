@@ -2,22 +2,22 @@ import Dynamo from '../common/API_Dynamodb';
 
 const TABLE_NAME = process.env.gameTableName;
 
-export default async(gameId: string) => {
+export default async (gameId : string) => {
 
-    const game = await Dynamo.query({
+    const game = await Dynamo.query2({
         ExpressionAttributeValues: {
-        ':itemtype': 'game',
-        ':Id': gameId
-    },
+            ':itemtype': 'game',
+            ':Id': gameId
+        },
         ExpressionAttributeNames: {
-        "#state": "state"
-    },
+            "#state": "state"
+        },
         KeyConditionExpression: 'itemType = :itemtype and Id = :Id',
         ProjectionExpression: '#state',
-        TableName: TABLE_NAME as string,
+        TableName: TABLE_NAME as string
     });
 
-    if (game!.Items?.length === 0) {
+    if (game !.length === 0 || game ![0].state === 'DONE') {
         return false;
     }
     return true;

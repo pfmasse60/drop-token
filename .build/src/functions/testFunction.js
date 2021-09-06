@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-const gameBoard_1 = __importDefault(require("../libs/gameBoard"));
-const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
-const TABLE_NAME = process.env.gameTableName;
+// import gameboard from '../libs/gameBoard';
+const isGame_1 = __importDefault(require("../common/isGame"));
+// const TABLE_NAME = process.env.gameTableName;
 // let td: string[][] = [
 //     [],
 //     [],
@@ -14,30 +14,35 @@ const TABLE_NAME = process.env.gameTableName;
 //     []
 // ];
 const handler = async (event) => {
+    let result;
     if (event && event.body) {
         const { column } = JSON.parse(event.body);
         const { gameId, playerId } = event.pathParameters;
-        const playerParams = {
-            ExpressionAttributeValues: {
-                ':playerId': playerId,
-                ':gameId': gameId
-            },
-            ExpressionAttributeNames: {
-                '#playerId': 'Id',
-                '#gameId': 'gameId'
-            },
-            KeyConditionExpression: '#playerId = :playerId and #gameId = :gameId',
-            ProjectionExpression: 'playerName',
-            TableName: TABLE_NAME,
-            IndexName: 'PlayerIndex'
-        };
-        const playerName = await API_Dynamodb_1.default.query(playerParams);
-        console.log(playerName);
-        // return playerName?.Items;
-        return gameBoard_1.default.add(column, playerName?.Items[0]?.playerName, gameId);
+        result = await isGame_1.default(gameId);
     }
+    return JSON.stringify({ 'statusCode': 200, 'message': result });
 };
 exports.handler = handler;
+//         const playerParams = {
+//             ExpressionAttributeValues: {
+//                 ':playerId': playerId,
+//                 ':gameId': gameId
+//             },
+//             ExpressionAttributeNames: {
+//                 '#playerId': 'Id',
+//                 '#gameId': 'gameId'
+//             },
+//             KeyConditionExpression: '#playerId = :playerId and #gameId = :gameId',
+//             ProjectionExpression: 'playerName',
+//             TableName: TABLE_NAME as string,
+//             IndexName: 'PlayerIndex'
+//             }
+//             const playerName = await Dynamo.query(playerParams);
+//             console.log(playerName);
+//             // return playerName?.Items;
+//         return gameboard.add(column, playerName?.Items[0]?.playerName as string, gameId);
+//     }
+// }
 // let options = {};
 // if (process.env.IS_OFFLINE) {
 //     options = {

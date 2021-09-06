@@ -26,6 +26,7 @@ exports.default = async (Id) => {
                 data[0].player2
             ],
             "state": data[0].state,
+            'winner': (data[0].winner != '' ? data[0].winner : undefined)
         };
         return gameState;
     }

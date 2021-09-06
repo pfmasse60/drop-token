@@ -23,7 +23,7 @@ const handler = async (event) => {
     }
     if (gameState.state === 'DONE')
         return API_Responses_1.default._410({ 'message': 'Game is already in DONE state' });
-    await makeMove_1.makeMove({ gameId, playerId, moveType: 'quit' });
+    await makeMove_1.makeMove({ gameId, playerId, move_type: 'quit' });
     await setGameState_1.default(gameId, 'DONE');
     //   const gameStateUpdateParams = {
     //     TableName: TABLE_NAME as string,

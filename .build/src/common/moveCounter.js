@@ -45,7 +45,7 @@ const moveCounter = async (gameId) => {
         return (new_count);
     }
     else {
-        const move_count = 0;
+        const move_count = 1;
         try {
             await API_Dynamodb_1.default.put(TABLE_NAME, {
                 itemType: 'counter',

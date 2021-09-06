@@ -44,7 +44,7 @@ export const moveCounter = async(gameId: string):Promise<number> => {
         return(new_count);
 
       } else {
-      const move_count = 0;
+      const move_count = 1;
 
       try {
         await Dynamo.put(TABLE_NAME!,

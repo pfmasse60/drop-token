@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const isWinner_1 = require("../common/isWinner");
+const isWinner_1 = require("./isWinner");
 let options = {};
 if (process.env.IS_OFFLINE) {
     options = {
