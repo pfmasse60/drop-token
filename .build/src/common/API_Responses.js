@@ -6,7 +6,7 @@ exports.default = {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-methods': '*',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             },
             statusCode: 200,
             body: JSON.stringify(data)
@@ -17,7 +17,7 @@ exports.default = {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-methods': '*',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             },
             statusCode: 202,
             body: JSON.stringify(data)
@@ -28,7 +28,7 @@ exports.default = {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-methods': '*',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             },
             statusCode: 400,
             body: JSON.stringify(data)
@@ -39,7 +39,7 @@ exports.default = {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-methods': '*',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             },
             statusCode: 404,
             body: JSON.stringify(data)
@@ -50,7 +50,7 @@ exports.default = {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-methods': '*',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             },
             statusCode: 409,
             body: JSON.stringify(data)
@@ -61,10 +61,10 @@ exports.default = {
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-methods': '*',
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             },
             statusCode: 410,
             body: JSON.stringify(data)
         };
-    },
+    }
 };

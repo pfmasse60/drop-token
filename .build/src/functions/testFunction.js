@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
-// import gameboard from '../libs/gameBoard';
-const isGame_1 = __importDefault(require("../common/isGame"));
+const API_Responses_1 = __importDefault(require("../common/API_Responses"));
+const API_Dynamodb_1 = __importDefault(require("../common/API_Dynamodb"));
 // const TABLE_NAME = process.env.gameTableName;
 // let td: string[][] = [
 //     [],
@@ -15,12 +15,34 @@ const isGame_1 = __importDefault(require("../common/isGame"));
 // ];
 const handler = async (event) => {
     let result;
+    const TABLE_NAME = process.env.gameTableName;
     if (event && event.body) {
         const { column } = JSON.parse(event.body);
         const { gameId, playerId } = event.pathParameters;
-        result = await isGame_1.default(gameId);
+        // result = await isGamePlayer(gameId, playerId);
+        const data = await API_Dynamodb_1.default.query({
+            ExpressionAttributeValues: {
+                ':gameId': gameId,
+                ':playerId': playerId
+            },
+            ExpressionAttributeNames: {
+                '#gameId': 'gameId',
+                '#playerId': 'Id'
+            },
+            KeyConditionExpression: '#gameId = :gameId and #playerId = :playerId',
+            ProjectionExpression: 'playerName, Id, turn',
+            TableName: TABLE_NAME,
+            IndexName: 'PlayerIndex'
+        });
+        let value;
+        if (data?.Items && data.Items?.length > 0) {
+            value = data?.Items[0];
+            if (value.Id === playerId) {
+                return API_Responses_1.default._200({ 'player': true, 'data': value });
+            }
+        }
+        return API_Responses_1.default._400({ 'player': false, 'data': value });
     }
-    return JSON.stringify({ 'statusCode': 200, 'message': result });
 };
 exports.handler = handler;
 //         const playerParams = {

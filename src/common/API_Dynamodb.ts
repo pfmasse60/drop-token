@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import { UpdateItemInput } from 'aws-sdk/clients/dynamodb';
 
 let options = {};
 if (process.env.IS_OFFLINE) {
@@ -12,47 +11,44 @@ if (process.env.IS_OFFLINE) {
 const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
 export default {
-    async put<T>(TableName: string, Item: T) {
-		var params = {
-			TableName,
-			Item
+    async put < T > (TableName : string, Item : T) {
+        var params = {
+            TableName,
+            Item
         }
         try {
             await dynamodb.put(params).promise();
-        } catch(e) {
+        } catch (e) {
             console.log(e.message);
         }
-	},
+    },
 
-    async update(params: AWS.DynamoDB.DocumentClient.UpdateItemInput) {
+    async update(params : AWS.DynamoDB.DocumentClient.UpdateItemInput) {
         try {
-            await dynamodb.update(params).promise() 
-        }
-        catch (e) {
+            await dynamodb.update(params).promise()
+        } catch (e) {
             console.log(e.message);
         }
         return {'statusCode': 202};
     },
 
-    async query(params: AWS.DynamoDB.DocumentClient.QueryInput) {
+    async query(params : AWS.DynamoDB.DocumentClient.QueryInput) {
         let data;
         try {
-            data = await dynamodb.query(params).promise() 
-        }
-        catch (e) {
+            data = await dynamodb.query(params).promise()
+        } catch (e) {
             console.log(e.message)
         }
         return data;
     },
 
-    async query2(params: AWS.DynamoDB.DocumentClient.QueryInput) {
+    async query2(params : AWS.DynamoDB.DocumentClient.QueryInput) {
         let data;
         try {
-            data = await dynamodb.query(params).promise() 
-        }
-        catch (e) {
+            data = await dynamodb.query(params).promise()
+        } catch (e) {
             console.log(e.message)
         }
-        return data?.Items;
+        return data ?. Items;
     }
 };

@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
+import {APIGatewayProxyEvent, APIGatewayProxyHandler} from 'aws-lambda';
 import Responses from '../common/API_Responses';
 import Dynamo from '../common/API_Dynamodb';
 import isGame from '../common/isGame';
@@ -10,17 +10,17 @@ interface MoveRequestParams {
 
 const TABLE_NAME = process.env.gameTableName;
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
+export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEvent) => {
     const {gameId, move_number} = event.pathParameters as unknown as MoveRequestParams;
 
-	if(await isGame(gameId) === false) {
-		return Responses._404({'message': 'Game/moves not found'});
-	};
+    if (await isGame(gameId) === false) {
+        return Responses._404({'message': 'Game/moves not found'});
+    };
 
     const moveParams = {
         ExpressionAttributeValues: {
             ':gameId': gameId,
-            ':move_number': +move_number,
+            ':move_number': + move_number,
             ':itemType': 'move'
         },
         ExpressionAttributeNames: {
@@ -38,10 +38,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     const data = await Dynamo.query(moveParams);
 
-    if (!data?.Items || data.Items?.length <= 0) {
+    if (!data?.Items || data.Items?. length <= 0) {
         return Responses._404({'message': 'Game/moves not found'});
     }
-    
+
     const playerParams = {
         ExpressionAttributeValues: {
             ':playerId': data.Items[0].playerId,
@@ -64,10 +64,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return(e.message);
     }
 
-    if (playerName?.Items && playerName?.Items?.length > 0) {
+    if (playerName?. Items && playerName?.Items?.length > 0) {
         playerName = playerName.Items[0];
     }
-    
+
     return Responses._202({
         'type': data.Items[0].itemType,
         'player': playerName!.playerName,

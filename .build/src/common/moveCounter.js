@@ -29,14 +29,17 @@ const moveCounter = async (gameId) => {
         try {
             await API_Dynamodb_1.default.update({
                 TableName: TABLE_NAME,
-                Key: { itemType: 'counter', Id: myObj.Id },
+                Key: {
+                    itemType: 'counter',
+                    Id: myObj.Id
+                },
                 UpdateExpression: 'set #move_count = :new_count',
                 ExpressionAttributeNames: {
                     '#move_count': 'move_count'
                 },
                 ExpressionAttributeValues: {
                     ':new_count': new_count
-                },
+                }
             });
         }
         catch (e) {

@@ -16,7 +16,7 @@ exports.default = async (Id) => {
         },
         KeyConditionExpression: 'itemType = :itemtype and Id = :Id',
         ProjectionExpression: "#state, player1, player2, winner",
-        TableName: TABLE_NAME,
+        TableName: TABLE_NAME
     };
     const data = await API_Dynamodb_1.default.query2(params);
     if (data && data.length > 0) {

@@ -11,7 +11,9 @@ const TABLE_NAME = process.env.gameTableName;
 
 export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEvent) => {
 
-    const {gameId} = event.pathParameters as unknown as {gameId: string};
+    const {gameId} = event.pathParameters as unknown as {
+        gameId: string
+    };
 
     if (await isGame(gameId) === false) {
         return Responses._404({'message': 'Game/moves not found'});
@@ -41,9 +43,9 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
             IndexName: 'MoveNumberIndex'
         }
     } else {
-        let startInt = +search.start!;
-        let untilInt = +search.until!;
-        
+        let startInt = + search.start !;
+        let untilInt = + search.until !;
+
         if (untilInt < startInt || startInt < 0) {
             return Responses._400({'message': 'Malformed request'});
         }
@@ -69,12 +71,14 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
             ExpressionAttributeNames: expressionAttNames,
             KeyConditionExpression: keyCondition,
             FilterExpression: '#move_number >= :start and #move_number <= :until ',
-            ProjectionExpression : 'moveType, playerName, #column',
-            TableName : TABLE_NAME as string,
-            IndexName : 'MoveNumberIndex'
+            ProjectionExpression: 'moveType, playerName, #column',
+            TableName: TABLE_NAME as string,
+            IndexName: 'MoveNumberIndex'
         }
     }
     const data = await Dynamo.query(qParams);
-    
-    return Responses._200({'moves': data!.Items});
+
+    return Responses._200({
+        'moves': data !.Items
+    });
 }

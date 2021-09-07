@@ -8,12 +8,17 @@ const TABLE_NAME = process.env.gameTableName;
 exports.default = async (gameId, state) => {
     const gameStateUpdateParams = {
         TableName: TABLE_NAME,
-        Key: { itemType: 'game', Id: gameId },
+        Key: {
+            itemType: 'game',
+            Id: gameId
+        },
         UpdateExpression: 'set #state = :state',
         ExpressionAttributeNames: {
             '#state': 'state'
         },
-        ExpressionAttributeValues: { ':state': state }
+        ExpressionAttributeValues: {
+            ':state': state
+        }
     };
     await API_Dynamodb_1.default.update(gameStateUpdateParams);
 };

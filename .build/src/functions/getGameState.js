@@ -9,11 +9,19 @@ const API_Responses_1 = __importDefault(require("../common/API_Responses"));
 const handler = async (event) => {
     const Id = event.pathParameters?.gameId;
     if (/[ `!@#$%^&*()_]/.test(Id) === true) {
-        return API_Responses_1.default._400({ body: { message: 'Malformed request' } });
+        return API_Responses_1.default._400({
+            body: {
+                message: 'Malformed request'
+            }
+        });
     }
     const gameState = await getState_1.default(Id);
     if (!gameState) {
-        return API_Responses_1.default._404({ body: { message: 'Game/moves not found' } });
+        return API_Responses_1.default._404({
+            body: {
+                message: 'Game/moves not found'
+            }
+        });
     }
     return API_Responses_1.default._200({ "gameId": gameState });
 };

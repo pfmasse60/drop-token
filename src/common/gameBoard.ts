@@ -54,6 +54,9 @@ export default {
         var columns = remoteGameBoard.Items[0].columns;
         var maxMoves = remoteGameBoard.Items[0].maxMoves;
     }
+    console.log(`COLUMN LENGTH AND ROWS ${
+        localGameBoard[column].length
+    }  ${rows}`);
     if (localGameBoard[column].length < rows) {
         localGameBoard[column].push(player);
 
@@ -78,6 +81,7 @@ export default {
         if (totalCount === maxMoves) 
             return 'draw';
         
+
 
         return 'success';
     } else {

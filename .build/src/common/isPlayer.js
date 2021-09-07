@@ -17,15 +17,17 @@ const isGamePlayer = async (gameId, playerId) => {
             '#gameId': 'gameId'
         },
         KeyConditionExpression: '#playerId = :playerId and #gameId = :gameId',
-        ProjectionExpression: 'playerName',
+        ProjectionExpression: 'playerName, Id, turn',
         TableName: TABLE_NAME,
         IndexName: 'PlayerIndex'
     });
-    if (data.Count && data.Count > 0) {
-        return ({ 'player': true, 'data': data.Items });
-    }
-    else {
-        return ({ 'player': false, 'data': null });
+    let value;
+    if (data?.Items && data.Items?.length > 0) {
+        value = data?.Items[0];
+        if (value.Id === playerId) {
+            return ({ 'player': true, 'data': value });
+        }
+        return ({ 'player': false, 'data': value });
     }
 };
 exports.isGamePlayer = isGamePlayer;

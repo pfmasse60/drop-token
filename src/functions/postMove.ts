@@ -20,9 +20,16 @@ export const handler = async (event : APIGatewayProxyEvent) => {
         const {gameId, playerId} = event.pathParameters as unknown as MoveParams;
         const gamePlayer = await isGamePlayer(gameId, playerId);
 
-        if (!await isGame(gameId) || gamePlayer.player === false) {
+        if (!await isGame(gameId) || gamePlayer !.player === false) {
             return Responses._404({'message': 'Game/moves not found'});
         };
+        if (gamePlayer !.data.turn === false) {
+            return Responses._409({
+                    'message': `${
+                    gamePlayer !.data.playerName
+                } tried to post when it's not their turn.`
+            })
+        }
 
         const move_number = await makeMove({gameId, playerId, column});
         return Responses._200({'move': `${gameId}/moves/${move_number}`});

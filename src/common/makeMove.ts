@@ -4,14 +4,24 @@ import Dynamo from './API_Dynamodb';
 import gameboard from './gameBoard';
 import setGameState from './setGameState';
 import setGameWinner from './setGameWinner';
+import AWS from 'aws-sdk';
 
 export interface MoveParams {
     gameId: string,
     playerId: string,
-    // moveType?: string,
     column?: number,
     move_type?: string
 }
+
+let options = {};
+if (process.env.IS_OFFLINE) {
+    options = {
+        region: 'localhost',
+        endpoint: 'http://localhost:8000'
+    }
+}
+
+const dynamodb = new AWS.DynamoDB.DocumentClient(options);
 
 const TABLE_NAME = process.env.gameTableName;
 
@@ -27,30 +37,37 @@ export const makeMove = async (params : MoveParams) => {
 
     const playerParams = {
         ExpressionAttributeValues: {
-            ':playerId': playerId,
-            ':gameId': gameId
+            ':gameId': gameId,
+            ':itemType': 'player'
         },
         ExpressionAttributeNames: {
-            '#playerId': 'Id',
-            '#gameId': 'gameId'
+            '#gameId': 'gameId',
+            '#itemType': 'itemType'
         },
-        KeyConditionExpression: '#playerId = :playerId and #gameId = :gameId',
-        ProjectionExpression: 'playerName',
+        KeyConditionExpression: '#gameId = :gameId and #itemType = :itemType',
+        ProjectionExpression: 'playerName, Id',
         TableName: TABLE_NAME as string,
-        IndexName: 'PlayerIndex'
+        IndexName: 'MoveNumberIndex'
     }
-    const playerName = await Dynamo.query(playerParams);
+    const playerNames = await Dynamo.query(playerParams);
     const move_number = await moveCounter(gameId);
 
-
-    if (playerName && playerName.Items) {
-        const PlayerName = playerName.Items[0].playerName
+    let value;
+    let PlayerName: string = '';
+    if (playerNames && playerNames.Items) {
+        for (value of playerNames ?. Items) {
+            if (value.Id === playerId) {
+                PlayerName = value.playerName;
+                await setPlayerTurn(playerId, false);
+            } else { 
+                await setPlayerTurn(value.Id, true);
+            }
+        }
         if (move_type === 'quit') {
             result = 'success';
             await setGameState(gameId, 'DONE');
         } else {
-            result = await gameboard.add(column, PlayerName as string, gameId);
-            console.log(`RESULT FROM GAMEBOARD ${result}`)
+            result = await gameboard.add(column, PlayerName, gameId);
         }
 
         switch (result) {
@@ -61,7 +78,7 @@ export const makeMove = async (params : MoveParams) => {
                         Id: uuidv4(),
                         gameId,
                         playerId,
-                        playerName: playerName !.Items[0].playerName,
+                        playerName: PlayerName,
                         moveType: move_type,
                         move_number,
                         column
@@ -77,7 +94,7 @@ export const makeMove = async (params : MoveParams) => {
                         Id: uuidv4(),
                         gameId,
                         playerId,
-                        playerName: playerName !.Items[0].playerName,
+                        playerName: PlayerName,
                         moveType: move_type,
                         move_number,
                         column
@@ -86,7 +103,7 @@ export const makeMove = async (params : MoveParams) => {
                     console.log(e.message);
                 }
                 await setGameState(gameId, 'DONE');
-                await setGameWinner(gameId, playerName !.Items[0].playerName);
+                await setGameWinner(gameId, PlayerName);
                 return move_number;
             case 'draw':
                 try {
@@ -95,7 +112,7 @@ export const makeMove = async (params : MoveParams) => {
                         Id: uuidv4(),
                         gameId,
                         playerId,
-                        playerName: playerName !.Items[0].playerName,
+                        playerName: PlayerName,
                         moveType: move_type,
                         move_number,
                         column
@@ -111,4 +128,23 @@ export const makeMove = async (params : MoveParams) => {
 
         }
     }
+    return 'Illegal Move';
+}
+
+export const setPlayerTurn = async (playerId : string, turn : boolean) => {
+    const params = {
+        TableName: TABLE_NAME as string,
+        Key: {
+            itemType: 'player',
+            Id: playerId
+        },
+        UpdateExpression: 'set #turn = :turn',
+        ExpressionAttributeValues: {
+            ':turn': turn
+        },
+        ExpressionAttributeNames: {
+            '#turn': 'turn'
+        }
+    }
+    await dynamodb.update(params).promise();
 }

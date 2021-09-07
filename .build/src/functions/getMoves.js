@@ -68,6 +68,8 @@ const handler = async (event) => {
         };
     }
     const data = await API_Dynamodb_1.default.query(qParams);
-    return API_Responses_1.default._200({ 'moves': data.Items });
+    return API_Responses_1.default._200({
+        'moves': data.Items
+    });
 };
 exports.handler = handler;

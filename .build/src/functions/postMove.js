@@ -17,6 +17,11 @@ const handler = async (event) => {
             return API_Responses_1.default._404({ 'message': 'Game/moves not found' });
         }
         ;
+        if (gamePlayer.data.turn === false) {
+            return API_Responses_1.default._409({
+                'message': `${gamePlayer.data.playerName} tried to post when it's not their turn.`
+            });
+        }
         const move_number = await makeMove_1.makeMove({ gameId, playerId, column });
         return API_Responses_1.default._200({ 'move': `${gameId}/moves/${move_number}` });
     }

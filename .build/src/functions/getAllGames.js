@@ -21,7 +21,6 @@ const handler = async () => {
         TableName: TABLE_NAME
     };
     const games = await API_Dynamodb_1.default.query(params);
-    console.log(games);
     if (games && games.Items) {
         var newArray = games.Items.map(function (item) {
             return [item.Id].join(" ");

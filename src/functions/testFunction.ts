@@ -2,9 +2,10 @@
 // import { makeMove } from '../utils/makeMove';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 // import gameboard from '../libs/gameBoard';
-import isGame from '../common/isGame';
+import { isGamePlayer } from '../common/isPlayer';
+import Responses from '../common/API_Responses';
 
-// import Dynamo from '../common/API_Dynamodb';
+import Dynamo from '../common/API_Dynamodb';
 
 export interface MoveParams {
 	gameId: string,
@@ -24,15 +25,40 @@ export interface MoveParams {
 
 export const handler = async (event: APIGatewayProxyEvent) => {
     let result;
+    const TABLE_NAME = process.env.gameTableName;
     if (event && event.body){
         const {column} = JSON.parse(event.body);
         
         const {gameId, playerId} = event.pathParameters as unknown as MoveParams;
 
-        result = await isGame(gameId);
+        // result = await isGamePlayer(gameId, playerId);
+
+        const data = await Dynamo.query({
+            ExpressionAttributeValues: {
+                ':gameId': gameId,
+                ':playerId': playerId
+            },
+            ExpressionAttributeNames: {
+                '#gameId': 'gameId',
+                '#playerId': 'Id' 
+            },
+            KeyConditionExpression: '#gameId = :gameId and #playerId = :playerId',
+            ProjectionExpression: 'playerName, Id, turn',
+            TableName: TABLE_NAME as string,
+            IndexName: 'PlayerIndex'
+            });
+
+        let value;
+        if (data?.Items && data.Items?.length > 0) {
+            value = data?.Items[0];
+                if (value.Id === playerId) {
+                    return Responses._200({'player': true, 'data': value})
+                } 
+            }
+            return Responses._400({'player': false, 'data': value})    
+        }
     }
-    return JSON.stringify({'statusCode': 200, 'message': result})
-}
+
 
 //         const playerParams = {
 //             ExpressionAttributeValues: {

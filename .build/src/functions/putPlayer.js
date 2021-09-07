@@ -7,13 +7,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handler = void 0;
 const API_Responses_1 = __importDefault(require("../common/API_Responses"));
-// import Dynamo from '../common/API_Dynamodb';
 const getState_1 = __importDefault(require("../common/getState"));
 const isPlayer_1 = require("../common/isPlayer");
 const makeMove_1 = require("../common/makeMove");
 const setGameState_1 = __importDefault(require("../common/setGameState"));
-// Serverless invironment variable set inside serverless.yml
-// const TABLE_NAME = process.env.gameTableName;
 const handler = async (event) => {
     const { gameId, playerId } = event.pathParameters;
     const gameState = await getState_1.default(gameId);
@@ -25,16 +22,6 @@ const handler = async (event) => {
         return API_Responses_1.default._410({ 'message': 'Game is already in DONE state' });
     await makeMove_1.makeMove({ gameId, playerId, move_type: 'quit' });
     await setGameState_1.default(gameId, 'DONE');
-    //   const gameStateUpdateParams = {
-    //     TableName: TABLE_NAME as string,
-    //     Key: {itemType: 'game', Id: gameId},
-    //     UpdateExpression: 'set #state = :done',
-    //     ExpressionAttributeNames:{
-    //         '#state': 'state'
-    //     },
-    //     ExpressionAttributeValues:{':done': 'DONE'}
-    //   };
-    // await Dynamo.update(gameStateUpdateParams);
     return API_Responses_1.default._202({ 'message': 'Success' });
 };
 exports.handler = handler;
