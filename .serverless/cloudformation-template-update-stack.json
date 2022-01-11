@@ -71,16 +71,16 @@
         }
       }
     },
-    "CreateNewGameLogGroup": {
+    "PostNewGameLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/createNewGame"
+        "LogGroupName": "/aws/lambda/postNewGame"
       }
     },
-    "QuitPlayerLogGroup": {
+    "PutPlayerLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/quitPlayer"
+        "LogGroupName": "/aws/lambda/putPlayer"
       }
     },
     "GetGameStateLogGroup": {
@@ -101,10 +101,10 @@
         "LogGroupName": "/aws/lambda/postMove"
       }
     },
-    "ReturnAllGamesLogGroup": {
+    "GetAllGamesLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/returnAllGames"
+        "LogGroupName": "/aws/lambda/getAllGames"
       }
     },
     "GetSingleMoveLogGroup": {
@@ -161,10 +161,10 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/createNewGame:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/postNewGame:*"
                     },
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/quitPlayer:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/putPlayer:*"
                     },
                     {
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getGameState:*"
@@ -176,7 +176,7 @@
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/postMove:*"
                     },
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/returnAllGames:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getAllGames:*"
                     },
                     {
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getSingleMove:*"
@@ -193,10 +193,10 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/createNewGame:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/postNewGame:*:*"
                     },
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/quitPlayer:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/putPlayer:*:*"
                     },
                     {
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getGameState:*:*"
@@ -208,7 +208,7 @@
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/postMove:*:*"
                     },
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/returnAllGames:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getAllGames:*:*"
                     },
                     {
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/getSingleMove:*:*"
@@ -253,18 +253,18 @@
         }
       }
     },
-    "CreateNewGameLambdaFunction": {
+    "PostNewGameLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/createNewGame.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/postNewGame.zip"
         },
-        "Handler": "src/functions/createNewGame.handler",
+        "Handler": "src/functions/postNewGame.handler",
         "Runtime": "nodejs14.x",
-        "FunctionName": "createNewGame",
+        "FunctionName": "postNewGame",
         "MemorySize": 1024,
         "Timeout": 6,
         "Description": "Create a new drop token game",
@@ -284,21 +284,21 @@
         }
       },
       "DependsOn": [
-        "CreateNewGameLogGroup"
+        "PostNewGameLogGroup"
       ]
     },
-    "QuitPlayerLambdaFunction": {
+    "PutPlayerLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/quitPlayer.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/putPlayer.zip"
         },
-        "Handler": "src/functions/quitPlayer.handler",
+        "Handler": "src/functions/putPlayer.handler",
         "Runtime": "nodejs14.x",
-        "FunctionName": "quitPlayer",
+        "FunctionName": "putPlayer",
         "MemorySize": 1024,
         "Timeout": 6,
         "Environment": {
@@ -317,7 +317,7 @@
         }
       },
       "DependsOn": [
-        "QuitPlayerLogGroup"
+        "PutPlayerLogGroup"
       ]
     },
     "GetGameStateLambdaFunction": {
@@ -327,7 +327,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/getGameState.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/getGameState.zip"
         },
         "Handler": "src/functions/getGameState.handler",
         "Runtime": "nodejs14.x",
@@ -360,7 +360,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/getMoves.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/getMoves.zip"
         },
         "Handler": "src/functions/getMoves.handler",
         "Runtime": "nodejs14.x",
@@ -393,7 +393,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/postMove.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/postMove.zip"
         },
         "Handler": "src/functions/postMove.handler",
         "Runtime": "nodejs14.x",
@@ -419,18 +419,18 @@
         "PostMoveLogGroup"
       ]
     },
-    "ReturnAllGamesLambdaFunction": {
+    "GetAllGamesLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/returnAllGames.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/getAllGames.zip"
         },
-        "Handler": "src/functions/returnAllGames.handler",
+        "Handler": "src/functions/getAllGames.handler",
         "Runtime": "nodejs14.x",
-        "FunctionName": "returnAllGames",
+        "FunctionName": "getAllGames",
         "MemorySize": 1024,
         "Timeout": 6,
         "Environment": {
@@ -449,7 +449,7 @@
         }
       },
       "DependsOn": [
-        "ReturnAllGamesLogGroup"
+        "GetAllGamesLogGroup"
       ]
     },
     "GetSingleMoveLambdaFunction": {
@@ -459,7 +459,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/getSingleMove.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/getSingleMove.zip"
         },
         "Handler": "src/functions/getSingleMove.handler",
         "Runtime": "nodejs14.x",
@@ -492,7 +492,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/drop-token/drop-token/1630337366655-2021-08-30T15:29:26.655Z/testFunction.zip"
+          "S3Key": "serverless/drop-token/drop-token/1638667537046-2021-12-05T01:25:37.046Z/testFunction.zip"
         },
         "Handler": "src/functions/testFunction.handler",
         "Runtime": "nodejs14.x",
@@ -518,85 +518,85 @@
         "TestFunctionLogGroup"
       ]
     },
-    "CreateNewGameLambdaVersionhMGe7vLMLCEYXSI3RAbM8OyLdyNxzhZ0xt5VRdXpA": {
+    "PostNewGameLambdaVersionQyvvLDNItmrSBrq8ndkiqTEl3YBhuGgSgRgDI2hOA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "CreateNewGameLambdaFunction"
+          "Ref": "PostNewGameLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4=",
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4=",
         "Description": "Create a new drop token game"
       }
     },
-    "GetMovesLambdaVersion0CEZZtnWV0NmudyX4SgwwteMaDmXnbhCE7arYahbfQ": {
+    "PutPlayerLambdaVersionenZOKf3JN6eJ8RobZ4xWkYCeNGF6cvqtGis9EpuaUE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "GetMovesLambdaFunction"
+          "Ref": "PutPlayerLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
-    "GetGameStateLambdaVersionyVj3pQCBV3uXI6awRMIlVTWfRSF1Fs9AQ68W4Tis": {
+    "GetGameStateLambdaVersionjW6UJoJURkNOODFrk4mSOs3cbShZzA7zKdLpYTgiInE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetGameStateLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
-    "QuitPlayerLambdaVersionEEgugDMpz1uZUkPZM0jTLhzie1thN1ssvTPF6NstI00": {
+    "GetMovesLambdaVersioncxyx30MrV3tiyv3MDCL8nJ284XGf47JNsXekcRrrIP0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "QuitPlayerLambdaFunction"
+          "Ref": "GetMovesLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
-    "PostMoveLambdaVersionZ4KM2UXXIF7BbsBmaa6k30NWtAHvZniLpeW6s1Y": {
+    "PostMoveLambdaVersionWzGkD3ZV6zQsbvlqR4bHXTbmByYVZRTD32RCPeRz4Uk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "PostMoveLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
-    "GetSingleMoveLambdaVersionQ5OUVqZP96pJ2Xtvx8wY3zn2PqoW29QYWcO1xp1g": {
+    "GetSingleMoveLambdaVersionni5W4TcFD5kvf1Fz8OtAOmtfihKMfQO2x5FeafA80": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetSingleMoveLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
-    "ReturnAllGamesLambdaVersionxwyuAkG7C04isI5KOQ3ZJIBeD0tq67KquyaY683I3A": {
+    "GetAllGamesLambdaVersion4b4QCTRo64T1zKPqU2Q7rsCfETKNNIyyB8Up2h4PsOU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
-          "Ref": "ReturnAllGamesLambdaFunction"
+          "Ref": "GetAllGamesLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
-    "TestFunctionLambdaVersionndyAnjS8T0LMJfkitl9r5dsBPrwvOdFeI6rNqUFkk": {
+    "TestFunctionLambdaVersionWdikGVwUust6OWEUwirHINEejTeXxTPVNWurxmllTw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "TestFunctionLambdaFunction"
         },
-        "CodeSha256": "QwG2OroxtfbfjC+iF2Uw4YZqo05qdaeLLntapgfR2D4="
+        "CodeSha256": "AKN4OOlQp1cQVWLzvkR9D5vo+DStNHpFx2JWgZH8MA4="
       }
     },
     "HttpApi": {
@@ -619,12 +619,12 @@
         }
       }
     },
-    "CreateNewGameLambdaPermissionHttpApi": {
+    "PostNewGameLambdaPermissionHttpApi": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
-            "CreateNewGameLambdaFunction",
+            "PostNewGameLambdaFunction",
             "Arn"
           ]
         },
@@ -656,7 +656,7 @@
         }
       }
     },
-    "HttpApiIntegrationCreateNewGame": {
+    "HttpApiIntegrationPostNewGame": {
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
@@ -665,7 +665,7 @@
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
           "Fn::GetAtt": [
-            "CreateNewGameLambdaFunction",
+            "PostNewGameLambdaFunction",
             "Arn"
           ]
         },
@@ -686,20 +686,20 @@
             [
               "integrations",
               {
-                "Ref": "HttpApiIntegrationCreateNewGame"
+                "Ref": "HttpApiIntegrationPostNewGame"
               }
             ]
           ]
         }
       },
-      "DependsOn": "HttpApiIntegrationCreateNewGame"
+      "DependsOn": "HttpApiIntegrationPostNewGame"
     },
-    "QuitPlayerLambdaPermissionHttpApi": {
+    "PutPlayerLambdaPermissionHttpApi": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
-            "QuitPlayerLambdaFunction",
+            "PutPlayerLambdaFunction",
             "Arn"
           ]
         },
@@ -731,7 +731,7 @@
         }
       }
     },
-    "HttpApiIntegrationQuitPlayer": {
+    "HttpApiIntegrationPutPlayer": {
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
@@ -740,7 +740,7 @@
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
           "Fn::GetAtt": [
-            "QuitPlayerLambdaFunction",
+            "PutPlayerLambdaFunction",
             "Arn"
           ]
         },
@@ -761,13 +761,13 @@
             [
               "integrations",
               {
-                "Ref": "HttpApiIntegrationQuitPlayer"
+                "Ref": "HttpApiIntegrationPutPlayer"
               }
             ]
           ]
         }
       },
-      "DependsOn": "HttpApiIntegrationQuitPlayer"
+      "DependsOn": "HttpApiIntegrationPutPlayer"
     },
     "GetGameStateLambdaPermissionHttpApi": {
       "Type": "AWS::Lambda::Permission",
@@ -994,12 +994,12 @@
       },
       "DependsOn": "HttpApiIntegrationPostMove"
     },
-    "ReturnAllGamesLambdaPermissionHttpApi": {
+    "GetAllGamesLambdaPermissionHttpApi": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
           "Fn::GetAtt": [
-            "ReturnAllGamesLambdaFunction",
+            "GetAllGamesLambdaFunction",
             "Arn"
           ]
         },
@@ -1031,7 +1031,7 @@
         }
       }
     },
-    "HttpApiIntegrationReturnAllGames": {
+    "HttpApiIntegrationGetAllGames": {
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
@@ -1040,7 +1040,7 @@
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
           "Fn::GetAtt": [
-            "ReturnAllGamesLambdaFunction",
+            "GetAllGamesLambdaFunction",
             "Arn"
           ]
         },
@@ -1061,13 +1061,13 @@
             [
               "integrations",
               {
-                "Ref": "HttpApiIntegrationReturnAllGames"
+                "Ref": "HttpApiIntegrationGetAllGames"
               }
             ]
           ]
         }
       },
-      "DependsOn": "HttpApiIntegrationReturnAllGames"
+      "DependsOn": "HttpApiIntegrationGetAllGames"
     },
     "GetSingleMoveLambdaPermissionHttpApi": {
       "Type": "AWS::Lambda::Permission",
@@ -1198,13 +1198,13 @@
         "TimeoutInMillis": 6500
       }
     },
-    "HttpApiRoutePatch": {
+    "HttpApiRoutePatchGameidVarPlayeridVar": {
       "Type": "AWS::ApiGatewayV2::Route",
       "Properties": {
         "ApiId": {
           "Ref": "HttpApi"
         },
-        "RouteKey": "PATCH /",
+        "RouteKey": "PATCH /{gameId}/{playerId}",
         "Target": {
           "Fn::Join": [
             "/",
@@ -1325,46 +1325,46 @@
         "Name": "sls-drop-token-drop-token-ServerlessDeploymentBucketName"
       }
     },
-    "CreateNewGameLambdaFunctionQualifiedArn": {
+    "PostNewGameLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateNewGameLambdaVersionhMGe7vLMLCEYXSI3RAbM8OyLdyNxzhZ0xt5VRdXpA"
+        "Ref": "PostNewGameLambdaVersionQyvvLDNItmrSBrq8ndkiqTEl3YBhuGgSgRgDI2hOA"
       },
       "Export": {
-        "Name": "sls-drop-token-drop-token-CreateNewGameLambdaFunctionQualifiedArn"
+        "Name": "sls-drop-token-drop-token-PostNewGameLambdaFunctionQualifiedArn"
       }
     },
-    "GetMovesLambdaFunctionQualifiedArn": {
+    "PutPlayerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetMovesLambdaVersion0CEZZtnWV0NmudyX4SgwwteMaDmXnbhCE7arYahbfQ"
+        "Ref": "PutPlayerLambdaVersionenZOKf3JN6eJ8RobZ4xWkYCeNGF6cvqtGis9EpuaUE"
       },
       "Export": {
-        "Name": "sls-drop-token-drop-token-GetMovesLambdaFunctionQualifiedArn"
+        "Name": "sls-drop-token-drop-token-PutPlayerLambdaFunctionQualifiedArn"
       }
     },
     "GetGameStateLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetGameStateLambdaVersionyVj3pQCBV3uXI6awRMIlVTWfRSF1Fs9AQ68W4Tis"
+        "Ref": "GetGameStateLambdaVersionjW6UJoJURkNOODFrk4mSOs3cbShZzA7zKdLpYTgiInE"
       },
       "Export": {
         "Name": "sls-drop-token-drop-token-GetGameStateLambdaFunctionQualifiedArn"
       }
     },
-    "QuitPlayerLambdaFunctionQualifiedArn": {
+    "GetMovesLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "QuitPlayerLambdaVersionEEgugDMpz1uZUkPZM0jTLhzie1thN1ssvTPF6NstI00"
+        "Ref": "GetMovesLambdaVersioncxyx30MrV3tiyv3MDCL8nJ284XGf47JNsXekcRrrIP0"
       },
       "Export": {
-        "Name": "sls-drop-token-drop-token-QuitPlayerLambdaFunctionQualifiedArn"
+        "Name": "sls-drop-token-drop-token-GetMovesLambdaFunctionQualifiedArn"
       }
     },
     "PostMoveLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "PostMoveLambdaVersionZ4KM2UXXIF7BbsBmaa6k30NWtAHvZniLpeW6s1Y"
+        "Ref": "PostMoveLambdaVersionWzGkD3ZV6zQsbvlqR4bHXTbmByYVZRTD32RCPeRz4Uk"
       },
       "Export": {
         "Name": "sls-drop-token-drop-token-PostMoveLambdaFunctionQualifiedArn"
@@ -1373,25 +1373,25 @@
     "GetSingleMoveLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetSingleMoveLambdaVersionQ5OUVqZP96pJ2Xtvx8wY3zn2PqoW29QYWcO1xp1g"
+        "Ref": "GetSingleMoveLambdaVersionni5W4TcFD5kvf1Fz8OtAOmtfihKMfQO2x5FeafA80"
       },
       "Export": {
         "Name": "sls-drop-token-drop-token-GetSingleMoveLambdaFunctionQualifiedArn"
       }
     },
-    "ReturnAllGamesLambdaFunctionQualifiedArn": {
+    "GetAllGamesLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ReturnAllGamesLambdaVersionxwyuAkG7C04isI5KOQ3ZJIBeD0tq67KquyaY683I3A"
+        "Ref": "GetAllGamesLambdaVersion4b4QCTRo64T1zKPqU2Q7rsCfETKNNIyyB8Up2h4PsOU"
       },
       "Export": {
-        "Name": "sls-drop-token-drop-token-ReturnAllGamesLambdaFunctionQualifiedArn"
+        "Name": "sls-drop-token-drop-token-GetAllGamesLambdaFunctionQualifiedArn"
       }
     },
     "TestFunctionLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "TestFunctionLambdaVersionndyAnjS8T0LMJfkitl9r5dsBPrwvOdFeI6rNqUFkk"
+        "Ref": "TestFunctionLambdaVersionWdikGVwUust6OWEUwirHINEejTeXxTPVNWurxmllTw"
       },
       "Export": {
         "Name": "sls-drop-token-drop-token-TestFunctionLambdaFunctionQualifiedArn"

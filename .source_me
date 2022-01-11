@@ -1,0 +1,10 @@
+ENDPOINT=https://dynamodb.us-east-1.amazonaws.com
+PROFILE=${PROFILE:-dev}
+TABLE_NAME=${PROFILE}-storage-table
+TEMPLATE_TABLE_NAME=templates-table
+AWS_SHARED_CREDENTIALS_FILE="$HOME/.aws/serverless/local.ini"
+REGION=localhost
+ENDPOINT=http://localhost:8000
+PROFILE=default
+AWS_SECRET_ACCESS_KEY=""
+AWS_ACCESS_KEY_ID=""
