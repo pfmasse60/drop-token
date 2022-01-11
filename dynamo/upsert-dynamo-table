@@ -1,0 +1,38 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source ${DIR}/.source_me
+
+echo "Checking Dynamo with params.... ${REGION} ${ENDPOINT} ${PROFILE} ${TABLE_NAME}"
+
+if aws dynamodb list-tables \
+ --endpoint ${ENDPOINT} \
+ --region ${REGION} \
+ --profile ${PROFILE} | grep ${TABLE_NAME} -q
+then
+#    sh upsert-initial-records $1;
+    echo "OK" && exit 0;
+else
+    echo "NOT OK";
+    aws dynamodb create-table \
+    --table-name ${TABLE_NAME} \
+    --attribute-definitions \
+        AttributeName=keyId,AttributeType=S \
+        AttributeName=secondaryKeyId,AttributeType=S \
+        AttributeName=data,AttributeType=S \
+        AttributeName=role,AttributeType=S \
+        AttributeName=timestamp,AttributeType=N \
+        AttributeName=console_domain_name,AttributeType=S \
+    --key-schema AttributeName=keyId,KeyType=HASH AttributeName=secondaryKeyId,KeyType=RANGE \
+    --global-secondary-indexes \
+        'IndexName=GSI-1,KeySchema=[{AttributeName=keyId,KeyType=HASH},{AttributeName=data,KeyType=RANGE}],Projection={ProjectionType=ALL},ProvisionedThroughput={ReadCapacityUnits=1,WriteCapacityUnits=1}' \
+        'IndexName=GSI-2,KeySchema=[{AttributeName=secondaryKeyId,KeyType=HASH},{AttributeName=role,KeyType=RANGE}],Projection={ProjectionType=ALL},ProvisionedThroughput={ReadCapacityUnits=1,WriteCapacityUnits=1}' \
+        'IndexName=GSI-3,KeySchema=[{AttributeName=data,KeyType=HASH},{AttributeName=secondaryKeyId,KeyType=RANGE}],Projection={ProjectionType=ALL},ProvisionedThroughput={ReadCapacityUnits=1,WriteCapacityUnits=1}' \
+        'IndexName=GSI-4,KeySchema=[{AttributeName=secondaryKeyId,KeyType=HASH},{AttributeName=timestamp,KeyType=RANGE}],Projection={ProjectionType=ALL},ProvisionedThroughput={ReadCapacityUnits=1,WriteCapacityUnits=1}' \
+        'IndexName=GSI-5,KeySchema=[{AttributeName=console_domain_name,KeyType=HASH},{AttributeName=secondaryKeyId,KeyType=RANGE}],Projection={ProjectionType=ALL},ProvisionedThroughput={ReadCapacityUnits=1,WriteCapacityUnits=1}' \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --region ${REGION} \
+    --profile ${PROFILE} \
+    --endpoint ${ENDPOINT};
+    sh upsert-initial-records $1;
+fi

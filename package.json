@@ -5,7 +5,9 @@
   "main": "handler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc"
+    "compile": "tsc",
+    "down": "sh ./scripts/stack-down",
+    "up": "sh ./scripts/stack-up"
   },
   "keywords": [
     "Typescript",
@@ -28,7 +30,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@middy/core": "^2.4.3",
+    "@middy/core": "^2.5.1",
     "@middy/http-error-handler": "^2.4.3",
     "@middy/http-json-body-parser": "^2.4.3",
     "@middy/validator": "^2.4.3",

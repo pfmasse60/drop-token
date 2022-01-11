@@ -1,0 +1,16 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR/
+
+mkdir -p $HOME/.aws/serverless
+cat <<EOF >$HOME/.aws/serverless/local.ini
+[default]
+aws_access_key_id=access
+aws_secret_access_key=secret
+EOF
+
+# wait a while
+sleep 5;
+
+sh upsert-dynamo-table local;
+sh upsert-template-table local;

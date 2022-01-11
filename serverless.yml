@@ -28,6 +28,7 @@ provider:
   stage: drop-token
   region: us-east-1
   lambdaHashingVersion: 20201221
+  profile: serverlessUser
 
   iamRoleStatements:
     - Effect: Allow

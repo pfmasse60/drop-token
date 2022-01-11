@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/.source_me
+
+docker-compose -p drop-token -f ${DIR}/../docker/docker-compose.yml up -d
+
+${DIR}/../dynamo/bootstrap

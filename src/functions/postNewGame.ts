@@ -6,6 +6,14 @@ import {APIGatewayProxyEvent, APIGatewayProxyHandler} from 'aws-lambda';
 import Responses from '../common/API_Responses';
 import Dynamo from '../common/API_Dynamodb';
 import {v4 as uuidv4} from 'uuid';
+// import core
+import middy from '@middy/core' // esm Node v14+
+//const middy = require('@middy/core') // commonjs Node v12+
+
+// import some middlewares
+import jsonBodyParser from '@middy/http-json-body-parser'
+import httpErrorHandler from '@middy/http-error-handler'
+import validator from '@middy/validator'
 
 // Serverless invironment variables set inside serverless.yml
 const STATE: string = process.env.gameState !;
@@ -41,12 +49,17 @@ type HandlerInputType = {
     rows: number
 }
 
-export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEvent) => {
+export const baseHandler: APIGatewayProxyHandler = async (event : APIGatewayProxyEvent) => {
     const gameId: string = uuidv4();
-    const {players, columns, rows} : HandlerInputType = JSON.parse(event.body !);
-
-    if (!players || !columns || !rows || players.length != 2) 
-        return Responses._400({'message': 'Malformed Requst'});
+    const {players, columns, rows} = event.body as unknown as HandlerInputType;
+    console.log(event);
+    // if (!players
+    //     || !columns
+    //     || !rows
+    //     || players.length != 2
+    //     || typeof rows !== 'number'
+    //     || typeof columns !== 'number') 
+    //     return Responses._400({'message': 'Malformed Requst'});
     
 
     const [player1, player2] = players;
@@ -85,3 +98,34 @@ export const handler: APIGatewayProxyHandler = async (event : APIGatewayProxyEve
 
     return Responses._200({"gameId": gameId});
 };
+
+const inputSchema = {
+    type: 'object',
+    properties: {
+        body: {
+            type: 'object',
+            properties: {
+                players: {
+                    type: 'array',
+                    items: {
+                        type: 'string'
+                    },
+                    minItems: 2,
+                    uniqueItems: true
+                },
+                columns: {
+                    type: 'number'
+                },
+                rows: {
+                    type: 'number'
+                }
+            },
+            required: ['players', 'columns', 'rows']
+        }
+    }
+}
+
+export const handler = middy(baseHandler)
+  .use(jsonBodyParser()) // parses the request body when it's a JSON and converts it to an object
+  .use(validator({inputSchema})) // validates the input
+  .use(httpErrorHandler()) // handles common http errors and returns proper responses
